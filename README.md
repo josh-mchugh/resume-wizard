@@ -50,3 +50,8 @@ If you want to learn more about building native executables, please consult http
 ## Related Guides
 
 - REST Qute ([guide](https://quarkus.io/guides/qute-reference#rest_integration)): Qute integration for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
+
+## Running in dev mode with Scala 3 compiler
+Running the Scala quarkus:dev we want to pass the compile arguments in as well according to this documentation. [quarkus-scala-3](https://docs.quarkiverse.io/quarkus-scala3/dev/indexb.html#_passing_scala_compiler_args_in_quarkus_dev_mode)
+
+QUARKUS_SCALA3_COMPILER_ARGS="-Wunused:all,-deprecation,-feature,-Ysemanticdb" mvn quarkus:dev
