@@ -42,5 +42,6 @@ nb-configuration.xml
 # Plugin directory
 /.quarkus/cli/plugins/
 
-# Metals
+# Metals & Scala
 .metals/
+.bloop/
