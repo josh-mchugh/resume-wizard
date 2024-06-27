@@ -45,3 +45,6 @@ nb-configuration.xml
 # Metals & Scala
 .metals/
 .bloop/
+
+# Mill
+out/
