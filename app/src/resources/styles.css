@@ -1,0 +1,71 @@
+.wizardly {
+    display: grid;
+    grid-template-columns: 2fr 6fr;
+    gap: 2rem;
+}
+.wizardly__steps {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.wizardly-step {
+    width: auto;
+    display: flex;
+    flex-group: 1;
+}
+.wizardly-step__link {
+    display: block;
+    width: 100%;
+    margin: 0 0 0.5em 0;
+    padding: 0.469rem 0.8rem;
+    background-color: rgb(18, 30, 59);
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+}
+.wizardly-step__link:hover {
+    color: #ffffff;
+}
+.wizardly-step__link--current {
+    background-color: rgb(101, 113, 255);
+    border: 1px solid transparent;
+}
+.wizardly-step__link--active {
+    background-color: rgba(101, 113, 225, 0.1);
+    color: rgb(101, 113, 255);
+    border: 1px solid rgb(101, 113, 255);
+    cursor: pointer;
+}
+.wizardly-step__link--active:hover {
+    color: rgb(101, 113, 255);
+}
+.wizardly__content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.wizardly-form {
+    width: 100%;
+    padding-bottom: 1rem;
+}
+.wizardly-actions {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+}
+
+.btn-disabled {
+    background: rgb(24, 40, 78);
+    border-color: rgb(24, 40, 78);
+}
+
+.btn-disabled:hover {
+    background: rgb(24, 40, 78);
+    border-color: rgb(24, 40, 78);
+    cursor: not-allowed;
+}
+

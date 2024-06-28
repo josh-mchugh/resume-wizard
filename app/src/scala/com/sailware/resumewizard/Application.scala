@@ -19,7 +19,10 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     doctype("html")(
       html(
         title("Resume Wizard"),
-        head(link(rel := "stylesheet", href := "/static/style.min.css")),
+        head(
+          link(rel := "stylesheet", href := "/static/style.min.css"),
+          link(rel := "stylesheet", href := "/static/styles.css")
+        ),
         body(
           div(cls := "main-wrapper")(
             // top navigation
@@ -35,55 +38,50 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
             // Page Content
             div(cls := "page-wrapper")(
               div(cls := "page-content")(
-                // Wizard
+                // Wizardly
                 div(cls := "row")(
                   div(cls := "col-md-12 stretch-card")(
                     div(cls := "card")(
                       div(cls := "card-body")(
-                        h4(cls := "card-title")(),
-                        div(id := "wizardVertical", cls := "wizard clearfix vertical", style := "display: block; width: 100%; overflow: hidden;", role := "application")(
-                          div(cls := "steps clearfix", style := "display: inline; float: left; width: 30%;")(
-                            ul(role := "tablist")(
-                              li(cls := "first current", role := "tab", aria.disabled := "false", aria.selected := "true")(
-                                a(
-                                  span(cls := "number")("1."),
-                                  "First Step"
-                                )
-                              ),
-                              li(cls := "done", role := "tab", aria.disabled := "false", aria.selected := "true")(
-                                a(
-                                  span(cls := "number")("2."),
-                                  "Second Step"
-                                )
-                              ),
-                              li(cls := "disabled", role := "tab", aria.disabled := "false", aria.selected := "true")(
-                                a(
-                                  span(cls := "number")("3."),
-                                  "Third Step"
-                                )
-                              ),
-                              li(cls := "disabled", role := "tab", aria.disabled := "false", aria.selected := "true")(
-                                a(
-                                  span(cls := "number")("4."),
-                                  "Four Step"
+                        h4(cls := "card-title")("Resume Wizard"),
+                        div(cls := "wizardly")(
+                          ul(cls := "wizardly__steps")(
+                            li(cls := "wizardly-step")(
+                              span(cls := "wizardly-step__link wizardly-step__link--current")("1. Name & Title")
+                            ),
+                            li(cls := "wizardly-step")(
+                              a(cls := "wizardly-step__link wizardly-step__link--active")("2. Contacts")
+                            ),
+                            li(cls := "wizardly-step")(
+                              span(cls := "wizardly-step__link")("3. Socials")
+                            ),
+                            li(cls := "wizardly-step")(
+                              span(cls := "wizardly-step__link")("4. Experiences")
+                            ),
+                            li(cls := "wizardly-step")(
+                              span(cls := "wizardly-step__link")("5. Certifications")
+                            )
+                          ),
+                          div(cls := "wizardly__content")(
+                            form()(
+                              div(cls := "wizardly-form")(
+                                div()(
+                                  label(cls := "form-label")("Name"),
+                                  input(cls := "form-control", `type` := "text", placeholder := "Name")
+                                ),
+                                div(cls := "mt-3")(
+                                  label(cls := "form-label")("Title"),
+                                  input(cls := "form-control", `type` := "text", placeholder := "Title")
+                                ),
+                                div(cls := "mt-3")(
+                                  label(cls := "form-label")("Summary"),
+                                  textarea(cls := "form-control", rows := 3, placeholder := "Summary of your current or previous role")
                                 )
                               )
                             ),
-                          ),
-                          div(cls := "content clearfix", style := "float: left; position: relative; border-radius: 5px;")(
-                            section(cls := "body current", role := "tabpanel", aria.hidden := "false", style := "left: 0px; float: left; position: absolute; width: 95%; height: 95%; padding: 2.5%;")(
-                              h4("First Step"),
-                              p("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut nulla nunc. Maecenas arcu sem, hendrerit a tempor quis, sagittis accumsan tellus. In hac habitasse platea dictumst. Donec a semper dui. Nunc eget quam libero. Nam at felis metus. Nam tellus dolor, tristique ac tempus nec, iaculis quis nisi.")
-                            )
-                          ),
-                          div(cls := "actions clearfix", style := "float: right; position: relative; text-align: right;")(
-                            ul(role := "menu", aria.disabled := "true", style := "display: block; list-style: none; padding: 0; margin: 0; text-align: right; display: inline-block;")(
-                              li(cls := "disabled", aria.disabled := "true", style := "float: left; margin: 0 0 0 1em;")(
-                                a(role := "menuitem")("Previous")
-                              ),
-                              li(aria.hidden := "false", aria.disabled := "false", style := "float: left; margin: 0 0 0 1em")(
-                                a(role := "menuitem")("Next")
-                              ),
+                            div(cls := "wizardly-actions")(
+                              button(cls := "btn btn-secondary btn-disabled")("Previous"),
+                              button(cls := "btn btn-primary")("Next")
                             )
                           )
                         )
