@@ -14,6 +14,13 @@ case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends
 
 case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
+  enum Step(val label: String):
+    case Name extends Step("Name & Title")
+    case Contact extends Step("Contacts")
+    case Social extends Step("Socials")
+    case Experience extends Step("Experiences")
+    case Certification extends Step("Certifications")
+
   @cask.get("/")
   def hello() =
     doctype("html")(
@@ -45,23 +52,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
                       div(cls := "card-body")(
                         h4(cls := "card-title")("Resume Wizard"),
                         div(cls := "wizardly")(
-                          ul(cls := "wizardly__steps")(
-                            li(cls := "wizardly-step")(
-                              span(cls := "wizardly-step__link wizardly-step__link--current")("1. Name & Title")
-                            ),
-                            li(cls := "wizardly-step")(
-                              a(cls := "wizardly-step__link wizardly-step__link--active")("2. Contacts")
-                            ),
-                            li(cls := "wizardly-step")(
-                              span(cls := "wizardly-step__link")("3. Socials")
-                            ),
-                            li(cls := "wizardly-step")(
-                              span(cls := "wizardly-step__link")("4. Experiences")
-                            ),
-                            li(cls := "wizardly-step")(
-                              span(cls := "wizardly-step__link")("5. Certifications")
-                            )
-                          ),
+                          buildSteps(Step.Name),
                           div(cls := "wizardly__content")(
                             form()(
                               div(cls := "wizardly-form")(
@@ -102,6 +93,24 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
         )
       )
     )
+
+  def buildSteps(current: Step) = 
+    ul(cls := "wizardly__steps")(
+      for step <- Step.values.toList
+      yield buildStep(s"${step.ordinal + 1}. ${step.label}", step == current)
+    )
+
+  def buildStep(label: String, current: Boolean) =
+    val stepText =
+      if current then
+        span(cls := "wizardly-step__link wizardly-step__link--current")(label)
+      else
+        a(cls := "wizardly-step__link wizardly-step__link--active", href := s"#$label")(label)
+
+    li(cls := "wizardly-step")(
+      stepText
+    )
+
 
   initialize()
 
