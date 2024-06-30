@@ -23,7 +23,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
 
   @cask.get("/")
   def hello() =
-    val current = Step.Experience
+    val current = Step.Certification
     doctype("html")(
       html(
         title("Resume Wizard"),
@@ -100,7 +100,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
       case Step.Contact => buildContactsForm()
       case Step.Social => buildSocialsForm()
       case Step.Experience => buildExperienceForm()
-      case _ => buildErrorForm()
+      case Step.Certification => buildCertificationForm()
 
   def buildNameAndTitleForm() =
     form()(
@@ -178,6 +178,28 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
         div(cls := "mt-3")(
           label(cls := "form-label")("Skills"),
           textarea(cls := "form-control", rows := 3, placeholder := "Skills")
+        )
+      )
+    )
+
+  def buildCertificationForm() =
+    form()(
+      div(cls := "wizardly-form")(
+        div()(
+          label(cls := "form-label")("Title"),
+          input(cls := "form-control", `type` := "text", placeholder := "Title")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Organization"),
+          input(cls := "form-control", `type` := "text", placeholder := "Organization")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Year"),
+          input(cls := "form-control", `type` := "text", placeholder := "Year")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Location"),
+          input(cls := "form-control", `type` := "text", placeholder := "Location")
         )
       )
     )
