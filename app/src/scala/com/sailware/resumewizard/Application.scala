@@ -23,7 +23,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
 
   @cask.get("/")
   def hello() =
-    val current = Step.Contact
+    val current = Step.Experience
     doctype("html")(
       html(
         title("Resume Wizard"),
@@ -98,6 +98,8 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     current match
       case Step.Name => buildNameAndTitleForm()
       case Step.Contact => buildContactsForm()
+      case Step.Social => buildSocialsForm()
+      case Step.Experience => buildExperienceForm()
       case _ => buildErrorForm()
 
   def buildNameAndTitleForm() =
@@ -132,6 +134,50 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
         div(cls := "mt-3")(
           label(cls := "form-label")("Location"),
           input(cls := "form-control", `type` := "text", placeholder := "Location")
+        )
+      )
+    )
+
+  def buildSocialsForm() =
+    form()(
+      div(cls := "wizardly-form")(
+        div()(
+          label(cls := "form-label")("Name"),
+          input(cls := "form-control", `type` := "text", placeholder := "Name")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("URL"),
+          input(cls := "form-control", `type` := "text", placeholder := "URL")
+        )
+      )
+    )
+
+  def buildExperienceForm() =
+    form()(
+      div(cls := "wizardly-form")(
+        div()(
+          label(cls := "form-label")("Title"),
+          input(cls := "form-control", `type` := "text", placeholder := "Title")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Organization"),
+          input(cls := "form-control", `type` := "text", placeholder := "Organization")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Duration"),
+          input(cls := "form-control", `type` := "text", placeholder := "Duration")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Location"),
+          input(cls := "form-control", `type` := "text", placeholder := "Location")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Description"),
+          textarea(cls := "form-control", rows := 3, placeholder := "Description")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Skills"),
+          textarea(cls := "form-control", rows := 3, placeholder := "Skills")
         )
       )
     )
