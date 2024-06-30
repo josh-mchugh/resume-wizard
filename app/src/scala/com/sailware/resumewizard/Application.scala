@@ -23,7 +23,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
 
   @cask.get("/")
   def hello() =
-    val current = Step.Name
+    val current = Step.Contact
     doctype("html")(
       html(
         title("Resume Wizard"),
@@ -97,6 +97,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
   def buildForm(current: Step) =
     current match
       case Step.Name => buildNameAndTitleForm()
+      case Step.Contact => buildContactsForm()
       case _ => buildErrorForm()
 
   def buildNameAndTitleForm() =
@@ -113,6 +114,24 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
         div(cls := "mt-3")(
           label(cls := "form-label")("Summary"),
           textarea(cls := "form-control", rows := 3, placeholder := "Summary of your current or previous role")
+        )
+      )
+    )
+
+  def buildContactsForm() =
+    form()(
+      div(cls := "wizardly-form")(
+        div()(
+          label(cls := "form-label")("Phone Number"),
+          input(cls := "form-control", `type` := "text", placeholder := "Phone Number")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Email Address"),
+          input(cls := "form-control", `type` := "text", placeholder := "Email Address")
+        ),
+        div(cls := "mt-3")(
+          label(cls := "form-label")("Location"),
+          input(cls := "form-control", `type` := "text", placeholder := "Location")
         )
       )
     )
