@@ -19,11 +19,13 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     case Contact extends Step("Contacts")
     case Social extends Step("Socials")
     case Experience extends Step("Experiences")
+    case Skill extends Step("Skills")
     case Certification extends Step("Certifications")
+    case Review extends Step("Review")
 
-  @cask.get("/")
-  def hello() =
-    val current = Step.Certification
+  @cask.get("/wizard/:stepString")
+  def getWizard(stepString: String) =
+    val step = Step.valueOf(stepString)
     doctype("html")(
       html(
         title("Resume Wizard"),
@@ -53,11 +55,8 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
                       div(cls := "card-body")(
                         h4(cls := "card-title")("Resume Wizard"),
                         div(cls := "wizardly")(
-                          buildSteps(current),
-                          div(cls := "wizardly__content")(
-                            buildForm(current),
-                            buildActions(),
-                          )
+                          buildSteps(step),
+                          buildContent(step),
                         )
                       )
                     )
@@ -77,141 +76,166 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
       )
     )
 
+  @cask.post("/wizard/:stepString")
+  def postWizard(stepString: String) =
+    val step = Step.valueOf(stepString)
+    val redirectUrl =
+      if hasNext(step) then s"/wizard/${Step.fromOrdinal(step.ordinal + 1)}"
+      else s"/wziard/$step"
+    cask.Redirect(redirectUrl)
+
   def buildSteps(current: Step) = 
     ul(cls := "wizardly__steps")(
-      for step <- Step.values.toList
-      yield buildStep(s"${step.ordinal + 1}. ${step.label}", step == current)
+      for step <- Step.values
+      yield buildStep(step, step == current)
     )
 
-  def buildStep(label: String, current: Boolean) =
+  def buildStep(step: Step, current: Boolean) =
+    val label = s"${step.ordinal + 1}. ${step.label}"
     val stepText =
       if current then
         span(cls := "wizardly-step__link wizardly-step__link--current")(label)
       else
-        a(cls := "wizardly-step__link wizardly-step__link--active", href := s"#$label")(label)
+        a(cls := "wizardly-step__link wizardly-step__link--active", href := s"/wizard/$step")(label)
 
     li(cls := "wizardly-step")(
       stepText
     )
 
-  def buildForm(current: Step) =
-    current match
-      case Step.Name => buildNameAndTitleForm()
-      case Step.Contact => buildContactsForm()
-      case Step.Social => buildSocialsForm()
-      case Step.Experience => buildExperienceForm()
-      case Step.Certification => buildCertificationForm()
+  def buildContent(step: Step) =
+    step match
+      case Step.Name => buildForm(step, buildNameAndTitleForm())
+      case Step.Contact => buildForm(step, buildContactsForm())
+      case Step.Social => buildForm(step, buildSocialsForm())
+      case Step.Experience => buildForm(step, buildExperienceForm())
+      case Step.Skill => buildForm(step, buildSkillForm())
+      case Step.Certification => buildForm(step, buildCertificationForm())
+      case Step.Review => buildReview(step)
+
+  def buildForm(step: Step, formInputs: Frag) =
+    form(method := "post", action := s"/wizard/$step")(
+      div(cls := "wizardly__content")(
+        div(cls := "wizardly-form")(
+          formInputs,
+        ),
+        buildActions(step)
+      )
+    )
 
   def buildNameAndTitleForm() =
-    form()(
-      div(cls := "wizardly-form")(
-        div()(
-          label(cls := "form-label")("Name"),
-          input(cls := "form-control", `type` := "text", placeholder := "Name")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Title"),
-          input(cls := "form-control", `type` := "text", placeholder := "Title")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Summary"),
-          textarea(cls := "form-control", rows := 3, placeholder := "Summary of your current or previous role")
-        )
+    List(
+      div()(
+        label(cls := "form-label")("Name"),
+        input(cls := "form-control", `type` := "text", placeholder := "Name")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Title"),
+        input(cls := "form-control", `type` := "text", placeholder := "Title")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Summary"),
+        textarea(cls := "form-control", rows := 3, placeholder := "Summary of your current or previous role")
       )
     )
 
   def buildContactsForm() =
-    form()(
-      div(cls := "wizardly-form")(
-        div()(
-          label(cls := "form-label")("Phone Number"),
-          input(cls := "form-control", `type` := "text", placeholder := "Phone Number")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Email Address"),
-          input(cls := "form-control", `type` := "text", placeholder := "Email Address")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Location"),
-          input(cls := "form-control", `type` := "text", placeholder := "Location")
-        )
+    List(
+      div()(
+        label(cls := "form-label")("Phone Number"),
+        input(cls := "form-control", `type` := "text", placeholder := "Phone Number")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Email Address"),
+        input(cls := "form-control", `type` := "text", placeholder := "Email Address")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Location"),
+        input(cls := "form-control", `type` := "text", placeholder := "Location")
       )
     )
 
   def buildSocialsForm() =
-    form()(
-      div(cls := "wizardly-form")(
-        div()(
-          label(cls := "form-label")("Name"),
-          input(cls := "form-control", `type` := "text", placeholder := "Name")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("URL"),
-          input(cls := "form-control", `type` := "text", placeholder := "URL")
-        )
+    List(
+      div()(
+        label(cls := "form-label")("Name"),
+        input(cls := "form-control", `type` := "text", placeholder := "Name")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("URL"),
+        input(cls := "form-control", `type` := "text", placeholder := "URL")
       )
     )
 
   def buildExperienceForm() =
-    form()(
-      div(cls := "wizardly-form")(
-        div()(
-          label(cls := "form-label")("Title"),
-          input(cls := "form-control", `type` := "text", placeholder := "Title")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Organization"),
-          input(cls := "form-control", `type` := "text", placeholder := "Organization")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Duration"),
-          input(cls := "form-control", `type` := "text", placeholder := "Duration")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Location"),
-          input(cls := "form-control", `type` := "text", placeholder := "Location")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Description"),
-          textarea(cls := "form-control", rows := 3, placeholder := "Description")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Skills"),
-          textarea(cls := "form-control", rows := 3, placeholder := "Skills")
-        )
+    List(
+      div()(
+        label(cls := "form-label")("Title"),
+        input(cls := "form-control", `type` := "text", placeholder := "Title")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Organization"),
+        input(cls := "form-control", `type` := "text", placeholder := "Organization")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Duration"),
+        input(cls := "form-control", `type` := "text", placeholder := "Duration")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Location"),
+        input(cls := "form-control", `type` := "text", placeholder := "Location")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Description"),
+        textarea(cls := "form-control", rows := 3, placeholder := "Description")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Skills"),
+        textarea(cls := "form-control", rows := 3, placeholder := "Skills")
+      )
+    )
+
+  def buildSkillForm() =
+    List(
+      div()(
+        label(cls := "form-label")("Name"),
+        input(cls := "form-control", `type` := "text", placeholder := "Name")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Rating"),
+        input(cls := "form-range", `type` := "range", min := 0, max := 5, step := 1)
       )
     )
 
   def buildCertificationForm() =
-    form()(
-      div(cls := "wizardly-form")(
-        div()(
-          label(cls := "form-label")("Title"),
-          input(cls := "form-control", `type` := "text", placeholder := "Title")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Organization"),
-          input(cls := "form-control", `type` := "text", placeholder := "Organization")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Year"),
-          input(cls := "form-control", `type` := "text", placeholder := "Year")
-        ),
-        div(cls := "mt-3")(
-          label(cls := "form-label")("Location"),
-          input(cls := "form-control", `type` := "text", placeholder := "Location")
-        )
+    List(
+      div()(
+        label(cls := "form-label")("Title"),
+        input(cls := "form-control", `type` := "text", placeholder := "Title")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Organization"),
+        input(cls := "form-control", `type` := "text", placeholder := "Organization")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Year"),
+        input(cls := "form-control", `type` := "text", placeholder := "Year")
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Location"),
+        input(cls := "form-control", `type` := "text", placeholder := "Location")
       )
     )
 
-  def buildErrorForm() =
-    p("Unknown state, try again")
-
-  def buildActions() =
+  def buildActions(current: Step) =
     div(cls := "wizardly-actions")(
-      button(cls := "btn btn-secondary btn-disabled")("Previous"),
-      button(cls := "btn btn-primary")("Next")
+      if hasNext(current) then button(cls := "btn btn-primary", `type` := "submit")("Next") else ""
     )
+
+  def hasNext(step: Step) =
+    step.ordinal != Step.values.length - 1
+
+  def buildReview(step: Step) =
+    div()("Review Page")
 
   initialize()
 
