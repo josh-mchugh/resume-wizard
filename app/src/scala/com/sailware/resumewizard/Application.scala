@@ -2,8 +2,8 @@ package com.sailware.resumewizard
 
 import scalatags.Text.all.*
 import scalatags.Text.tags2.nav
-import scalatags.Text.tags2.title
 import scalatags.Text.tags2.section
+import scalatags.Text.tags2.title
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
@@ -23,9 +23,96 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     case Certification extends Step("Certifications")
     case Review extends Step("Review")
 
-  @cask.get("/wizard/:stepString")
-  def getWizard(stepString: String) =
-    val step = Step.valueOf(stepString)
+  case class Social(val name: String, val url: String)
+  case class Experience(
+    val title: String,
+    val organization: String,
+    val duration: String,
+    val location: String,
+    val description: String,
+    val skills: String
+  )
+  case class Skill(val name: String, val rating: Int)
+  case class Certification(val title: String, val organization: String, val year: String, val location: String)
+  case class Resume(
+    val name: String,
+    val title: String,
+    val summary: String,
+    val phone: String,
+    val email: String,
+    val location: String,
+    val social: Social,
+    val experience: Experience,
+    val skill: Skill,
+    val certification: Certification
+  )
+  var resume = Resume(
+    "", "", "", "", "", "",
+    Social("", ""),
+    Experience("", "", "", "", "", ""),
+    Skill("", 0),
+    Certification("", "", "", "")
+  )
+
+  @cask.get("/wizard/name")
+  def getWizardName() =
+    buildPage(Step.Name)
+
+  @cask.postForm("/wizard/name")
+  def postWizardName(name: String, title: String, summary: String) =
+    resume = resume.copy(name = name, title = title, summary = summary)
+    cask.Redirect("/wizard/contact")
+
+  @cask.get("/wizard/contact")
+  def getWizardContact() =
+    buildPage(Step.Contact)
+
+  @cask.postForm("/wizard/contact")
+  def postWizardContact(phone: String, email: String, location: String) =
+    resume = resume.copy(phone = phone, email = email, location = location)
+    cask.Redirect("/wizard/social")
+
+  @cask.get("/wizard/social")
+  def getWizardSocial() =
+    buildPage(Step.Social)
+
+  @cask.postForm("/wizard/social")
+  def postWizardSocial(name: String, url: String) =
+    resume = resume.copy(social = Social(name, url))
+    cask.Redirect("/wizard/experience")
+
+  @cask.get("/wizard/experience")
+  def getWizardExperience() =
+    buildPage(Step.Experience)
+
+  @cask.postForm("/wizard/experience")
+  def postWizardExperience(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
+    resume = resume.copy(experience = Experience(title = title, organization = organization, duration = duration, location = location, description = description, skills = skills))
+    cask.Redirect("/wizard/skill")
+
+  @cask.get("/wizard/skill")
+  def getWizardSkill() =
+    buildPage(Step.Skill)
+
+  @cask.postForm("/wizard/skill")
+  def postWizardSkill(name: String, rating: Int) =
+    resume = resume.copy(skill = Skill(name, rating))
+    cask.Redirect("/wizard/certification")
+
+  @cask.get("/wizard/certification")
+  def getWizardCertification() =
+    buildPage(Step.Certification)
+
+  @cask.postForm("/wizard/certification")
+  def postWizardCertification(title: String, organization: String, year: String, location: String) =
+    resume = resume.copy(certification = Certification(title, organization, year, location))
+    cask.Redirect("/wizard/review")
+
+  @cask.get("/wizard/review")
+  def getWizardReview() =
+    buildPage(Step.Review)
+
+  def buildPage(step: Step) =
     doctype("html")(
       html(
         title("Resume Wizard"),
@@ -40,7 +127,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
               div(cls := "navbar top-navbar")(
                 div(cls := "container")(
                   div(cls := "navbar-content")(
-                   a(cls :="navbar-brand", href := "#")("Resume", span("Wizard"))
+                    a(cls :="navbar-brand", href := "#")("Resume", span("Wizard"))
                   )
                 )
               )
@@ -76,14 +163,6 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
       )
     )
 
-  @cask.post("/wizard/:stepString")
-  def postWizard(stepString: String) =
-    val step = Step.valueOf(stepString)
-    val redirectUrl =
-      if hasNext(step) then s"/wizard/${Step.fromOrdinal(step.ordinal + 1)}"
-      else s"/wziard/$step"
-    cask.Redirect(redirectUrl)
-
   def buildSteps(current: Step) = 
     ul(cls := "wizardly__steps")(
       for step <- Step.values
@@ -96,7 +175,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
       if current then
         span(cls := "wizardly-step__link wizardly-step__link--current")(label)
       else
-        a(cls := "wizardly-step__link wizardly-step__link--active", href := s"/wizard/$step")(label)
+        a(cls := "wizardly-step__link wizardly-step__link--active", href := s"/wizard/${step.toString().toLowerCase()}")(label)
 
     li(cls := "wizardly-step")(
       stepText
@@ -113,7 +192,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
       case Step.Review => buildReview(step)
 
   def buildForm(step: Step, formInputs: Frag) =
-    form(method := "post", action := s"/wizard/$step")(
+    form(method := "post", action := s"/wizard/${step.toString().toLowerCase()}")(
       div(cls := "wizardly__content")(
         div(cls := "wizardly-form")(
           formInputs,
@@ -126,15 +205,15 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     List(
       div()(
         label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", placeholder := "Name")
+        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", placeholder := "Title")
+        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Summary"),
-        textarea(cls := "form-control", rows := 3, placeholder := "Summary of your current or previous role")
+        textarea(cls := "form-control", rows := 3, name := "summary",  placeholder := "Summary of your current or previous role")
       )
     )
 
@@ -142,15 +221,15 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     List(
       div()(
         label(cls := "form-label")("Phone Number"),
-        input(cls := "form-control", `type` := "text", placeholder := "Phone Number")
+        input(cls := "form-control", `type` := "text", name := "phone", placeholder := "Phone Number")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Email Address"),
-        input(cls := "form-control", `type` := "text", placeholder := "Email Address")
+        input(cls := "form-control", `type` := "text", name := "email", placeholder := "Email Address")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", placeholder := "Location")
+        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location")
       )
     )
 
@@ -158,11 +237,11 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     List(
       div()(
         label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", placeholder := "Name")
+        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("URL"),
-        input(cls := "form-control", `type` := "text", placeholder := "URL")
+        input(cls := "form-control", `type` := "text", name := "url", placeholder := "URL")
       )
     )
 
@@ -170,27 +249,27 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     List(
       div()(
         label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", placeholder := "Title")
+        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Organization"),
-        input(cls := "form-control", `type` := "text", placeholder := "Organization")
+        input(cls := "form-control", `type` := "text", name := "organization", placeholder := "Organization")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Duration"),
-        input(cls := "form-control", `type` := "text", placeholder := "Duration")
+        input(cls := "form-control", `type` := "text", name := "duration",  placeholder := "Duration")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", placeholder := "Location")
+        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Description"),
-        textarea(cls := "form-control", rows := 3, placeholder := "Description")
+        textarea(cls := "form-control", rows := 3, name := "description", placeholder := "Description")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Skills"),
-        textarea(cls := "form-control", rows := 3, placeholder := "Skills")
+        textarea(cls := "form-control", rows := 3, name := "skills",  placeholder := "Skills")
       )
     )
 
@@ -198,11 +277,11 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     List(
       div()(
         label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", placeholder := "Name")
+        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Rating"),
-        input(cls := "form-range", `type` := "range", min := 0, max := 5, step := 1)
+        input(cls := "form-range", `type` := "range", name := "rating", min := 0, max := 5, step := 1)
       )
     )
 
@@ -210,19 +289,19 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     List(
       div()(
         label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", placeholder := "Title")
+        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Organization"),
-        input(cls := "form-control", `type` := "text", placeholder := "Organization")
+        input(cls := "form-control", `type` := "text", name := "organization", placeholder := "Organization")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Year"),
-        input(cls := "form-control", `type` := "text", placeholder := "Year")
+        input(cls := "form-control", `type` := "text", name := "year", placeholder := "Year")
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", placeholder := "Location")
+        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location")
       )
     )
 
@@ -235,7 +314,30 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     step.ordinal != Step.values.length - 1
 
   def buildReview(step: Step) =
-    div()("Review Page")
+    div()(
+      div(id := "main")(
+        p(strong("Name: "), resume.name),
+        p(strong("Title: "), resume.title),
+        p(strong("Summary: "), resume.summary),
+        p(strong("Phone: "), resume.phone),
+        p(strong("Email: "), resume.email),
+        p(strong("Location: "), resume.location),
+        p(strong("Social Name: "), resume.social.name),
+        p(strong("Social URL: "), resume.social.url),
+        p(strong("Experience Title: "), resume.experience.title),
+        p(strong("Experience Organization: "), resume.experience.organization),
+        p(strong("Experience Duration: "), resume.experience.duration),
+        p(strong("Experience Location: "), resume.experience.location),
+        p(strong("Experience Description: "), resume.experience.description),
+        p(strong("Experience Skills: "), resume.experience.skills),
+        p(strong("Skill Name: "), resume.skill.name),
+        p(strong("Skill Rating: "), resume.skill.rating),
+        p(strong("Certification Title: ", resume.certification.title)),
+        p(strong("Certification Organization: "), resume.certification.organization),
+        p(strong("Certification Year: "), resume.certification.year),
+        p(strong("Certification Location: "), resume.certification.location),
+      )
+    )
 
   initialize()
 
