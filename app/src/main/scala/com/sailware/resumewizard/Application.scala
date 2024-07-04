@@ -8,7 +8,7 @@ import scalatags.Text.tags2.title
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.staticFiles("/static/")
-  def staticFilesRoutes() = "app/src/resources"
+  def staticFilesRoutes() = "app/src/main/resources/public"
 
   initialize()
 
@@ -346,3 +346,4 @@ object Application extends cask.Main:
     StaticRoutes(),
     RootRoutes()
   )
+
