@@ -4,6 +4,13 @@ import scalatags.Text.all.*
 import scalatags.Text.tags2.nav
 import scalatags.Text.tags2.section
 import scalatags.Text.tags2.title
+import org.jooq.DSLContext
+import org.jooq.SQLDialect
+import org.jooq.impl.DSL
+import org.jooq.impl.DSL.field
+import org.jooq.impl.DSL.table
+import java.sql.{Connection, DriverManager}
+import org.flywaydb.core.Flyway
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
@@ -346,4 +353,26 @@ object Application extends cask.Main:
     StaticRoutes(),
     RootRoutes()
   )
+  val dbUsername = sys.env.get("DB_USERNAME")
+  val dbPassword = sys.env.get("DB_PASSWORD")
+  val dbURL =sys.env.get("DB_URL")
+  println(s"db username: $dbUsername")
+  println(s"db password: $dbPassword")
+  println(s"db url: $dbURL")
+  
+  val flyway = Flyway.configure()
+    .dataSource(dbURL.get, dbUsername.get, dbPassword.get)
+    .locations("filesystem:./app/src/main/resources/db/migration")
+    .load()
+  flyway.migrate()
 
+  try
+    val conn = DriverManager.getConnection(dbURL.get, dbUsername.get, dbPassword.get)
+    val create = DSL.using(conn, SQLDialect.POSTGRES)
+    val query = create.select(field("id"), field("name"), field("test")).from(table("resume"))
+    val values = query.fetch()
+    println(s"values: $values")
+  catch
+    case e: Exception => println(s"Error fetching data:\n $e")
+  finally
+    println("Done with database connect")
