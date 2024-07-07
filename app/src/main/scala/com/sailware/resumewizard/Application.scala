@@ -4,13 +4,16 @@ import scalatags.Text.all.*
 import scalatags.Text.tags2.nav
 import scalatags.Text.tags2.section
 import scalatags.Text.tags2.title
+import java.sql.{Connection, DriverManager}
+import org.flywaydb.core.Flyway
 import org.jooq.DSLContext
+import org.jooq.Result
+import org.jooq.Record
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import org.jooq.impl.DSL.field
 import org.jooq.impl.DSL.table
-import java.sql.{Connection, DriverManager}
-import org.flywaydb.core.Flyway
+import com.sailware.resumewizard.jooq.Tables.*
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
@@ -369,8 +372,8 @@ object Application extends cask.Main:
   try
     val conn = DriverManager.getConnection(dbURL.get, dbUsername.get, dbPassword.get)
     val create = DSL.using(conn, SQLDialect.POSTGRES)
-    val query = create.select(field("id"), field("name"), field("test")).from(table("resume"))
-    val values = query.fetch()
+    val query = create.select().from(RESUME)
+    val values: Result[Record] = query.fetch()
     println(s"values: $values")
   catch
     case e: Exception => println(s"Error fetching data:\n $e")
