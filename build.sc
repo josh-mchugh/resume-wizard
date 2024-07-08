@@ -91,7 +91,7 @@ object app extends ScalaModule {
               </properties>
             </database>
             <target>
-              <packageName>com.sailware.resumewizard.jooq</packageName>
+              <packageName>net.sailware.resumewizard.jooq</packageName>
 	      <directory>${T.dest}</directory>
             </target>
           </generator>

@@ -1,4 +1,4 @@
-package com.sailware.resumewizard
+package net.sailware.resumewizard
 
 import scalatags.Text.all.*
 import scalatags.Text.tags2.nav
@@ -13,7 +13,7 @@ import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import org.jooq.impl.DSL.field
 import org.jooq.impl.DSL.table
-import com.sailware.resumewizard.jooq.Tables.*
+import net.sailware.resumewizard.jooq.Tables.*
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
