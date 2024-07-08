@@ -352,30 +352,25 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
   initialize()
 
 object Application extends cask.Main:
-  val allRoutes = Seq(
-    StaticRoutes(),
-    RootRoutes()
-  )
+  // get database configuration from environment variables
   val dbUsername = sys.env.get("DB_USERNAME")
   val dbPassword = sys.env.get("DB_PASSWORD")
   val dbURL =sys.env.get("DB_URL")
-  println(s"db username: $dbUsername")
-  println(s"db password: $dbPassword")
-  println(s"db url: $dbURL")
-  
+
+  // Run Flyway database migrations
   val flyway = Flyway.configure()
     .dataSource(dbURL.get, dbUsername.get, dbPassword.get)
     .locations("filesystem:./app/src/main/resources/db/migration")
     .load()
   flyway.migrate()
 
-  try
-    val conn = DriverManager.getConnection(dbURL.get, dbUsername.get, dbPassword.get)
-    val create = DSL.using(conn, SQLDialect.POSTGRES)
-    val query = create.select().from(RESUME)
-    val values: Result[Record] = query.fetch()
-    println(s"values: $values")
-  catch
-    case e: Exception => println(s"Error fetching data:\n $e")
-  finally
-    println("Done with database connect")
+  //val conn = DriverManager.getConnection(dbURL.get, dbUsername.get, dbPassword.get)
+  //val create = DSL.using(conn, SQLDialect.POSTGRES)
+  //val query = create.select().from(RESUME)
+  //val values: Result[Record] = query.fetch()
+
+  val allRoutes = Seq(
+    StaticRoutes(),
+    RootRoutes()
+  )
+  
