@@ -11,9 +11,9 @@ import org.jooq.Result
 import org.jooq.Record
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
-import org.jooq.impl.DSL.field
-import org.jooq.impl.DSL.table
 import net.sailware.resumewizard.jooq.Tables.*
+
+case class DatabaseConfig(url: String, username: String, password: String)
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
@@ -22,10 +22,10 @@ case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends
 
   initialize()
 
-case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
+case class RootRoutes(databaseConfig: DatabaseConfig)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   enum Step(val label: String):
-    case Name extends Step("Name & Title")
+    case Detail extends Step("Name & Title")
     case Contact extends Step("Contacts")
     case Social extends Step("Socials")
     case Experience extends Step("Experiences")
@@ -64,13 +64,26 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
     Certification("", "", "", "")
   )
 
-  @cask.get("/wizard/name")
+  @cask.get("/wizard/detail")
   def getWizardName() =
-    buildPage(Step.Name)
+    buildPage(Step.Detail)
 
-  @cask.postForm("/wizard/name")
+  @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
     resume = resume.copy(name = name, title = title, summary = summary)
+    val conn = DriverManager.getConnection(databaseConfig.url, databaseConfig.username, databaseConfig.password)
+    val create = DSL.using(conn, SQLDialect.POSTGRES)
+    if create.fetchCount(RESUME_DETAILS) > 0 then
+      val resumeDetail = create.selectFrom(RESUME_DETAILS).fetchOne()
+      create.update(RESUME_DETAILS)
+        .set(RESUME_DETAILS.NAME, name)
+        .set(RESUME_DETAILS.TITLE, title)
+        .set(RESUME_DETAILS.SUMMARY, summary)
+        .execute()
+    else
+      create.insertInto(RESUME_DETAILS, RESUME_DETAILS.NAME, RESUME_DETAILS.TITLE, RESUME_DETAILS.SUMMARY)
+        .values(name, title, summary)
+        .execute()
     cask.Redirect("/wizard/contact")
 
   @cask.get("/wizard/contact")
@@ -193,7 +206,7 @@ case class RootRoutes()(implicit cc: castor.Context, log: cask.Logger) extends c
 
   def buildContent(step: Step) =
     step match
-      case Step.Name => buildForm(step, buildNameAndTitleForm())
+      case Step.Detail => buildForm(step, buildNameAndTitleForm())
       case Step.Contact => buildForm(step, buildContactsForm())
       case Step.Social => buildForm(step, buildSocialsForm())
       case Step.Experience => buildForm(step, buildExperienceForm())
@@ -364,13 +377,8 @@ object Application extends cask.Main:
     .load()
   flyway.migrate()
 
-  //val conn = DriverManager.getConnection(dbURL.get, dbUsername.get, dbPassword.get)
-  //val create = DSL.using(conn, SQLDialect.POSTGRES)
-  //val query = create.select().from(RESUME)
-  //val values: Result[Record] = query.fetch()
-
   val allRoutes = Seq(
     StaticRoutes(),
-    RootRoutes()
+    RootRoutes(DatabaseConfig(dbURL.get, dbUsername.get, dbPassword.get))
   )
   
