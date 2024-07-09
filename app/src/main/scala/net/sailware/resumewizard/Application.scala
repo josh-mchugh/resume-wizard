@@ -5,6 +5,8 @@ import scalatags.Text.tags2.nav
 import scalatags.Text.tags2.section
 import scalatags.Text.tags2.title
 import java.sql.{Connection, DriverManager}
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.flywaydb.core.Flyway
 import org.jooq.DSLContext
 import org.jooq.Result
@@ -13,8 +15,6 @@ import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import net.sailware.resumewizard.jooq.Tables.*
 
-case class DatabaseConfig(url: String, username: String, password: String)
-
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.staticFiles("/static/")
@@ -22,7 +22,7 @@ case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends
 
   initialize()
 
-case class RootRoutes(databaseConfig: DatabaseConfig)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
+case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   enum Step(val label: String):
     case Detail extends Step("Name & Title")
@@ -71,17 +71,15 @@ case class RootRoutes(databaseConfig: DatabaseConfig)(implicit cc: castor.Contex
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
     resume = resume.copy(name = name, title = title, summary = summary)
-    val conn = DriverManager.getConnection(databaseConfig.url, databaseConfig.username, databaseConfig.password)
-    val create = DSL.using(conn, SQLDialect.POSTGRES)
-    if create.fetchCount(RESUME_DETAILS) > 0 then
-      val resumeDetail = create.selectFrom(RESUME_DETAILS).fetchOne()
-      create.update(RESUME_DETAILS)
+    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
+      val resumeDetail = dslContext.selectFrom(RESUME_DETAILS).fetchOne()
+      dslContext.update(RESUME_DETAILS)
         .set(RESUME_DETAILS.NAME, name)
         .set(RESUME_DETAILS.TITLE, title)
         .set(RESUME_DETAILS.SUMMARY, summary)
         .execute()
     else
-      create.insertInto(RESUME_DETAILS, RESUME_DETAILS.NAME, RESUME_DETAILS.TITLE, RESUME_DETAILS.SUMMARY)
+      dslContext.insertInto(RESUME_DETAILS, RESUME_DETAILS.NAME, RESUME_DETAILS.TITLE, RESUME_DETAILS.SUMMARY)
         .values(name, title, summary)
         .execute()
     cask.Redirect("/wizard/contact")
@@ -364,21 +362,32 @@ case class RootRoutes(databaseConfig: DatabaseConfig)(implicit cc: castor.Contex
 
   initialize()
 
+case class DatabaseConfig(url: String, username: String, password: String)
+
 object Application extends cask.Main:
-  // get database configuration from environment variables
+  // Get database configuration from environment variables
   val dbUsername = sys.env.get("DB_USERNAME")
   val dbPassword = sys.env.get("DB_PASSWORD")
   val dbURL =sys.env.get("DB_URL")
+  val databaseConfig = DatabaseConfig(dbURL.get, dbUsername.get, dbPassword.get)
 
   // Run Flyway database migrations
   val flyway = Flyway.configure()
-    .dataSource(dbURL.get, dbUsername.get, dbPassword.get)
+    .dataSource(databaseConfig.url, databaseConfig.username, databaseConfig.password)
     .locations("filesystem:./app/src/main/resources/db/migration")
     .load()
   flyway.migrate()
 
+  // Setup HikariCP for database connection pool
+  val hikariConfig = new HikariConfig()
+  hikariConfig.setJdbcUrl(databaseConfig.url)
+  hikariConfig.setUsername(databaseConfig.username)
+  hikariConfig.setPassword(databaseConfig.password)
+
+  val dslContext = DSL.using(new HikariDataSource(hikariConfig), SQLDialect.POSTGRES)
+
   val allRoutes = Seq(
     StaticRoutes(),
-    RootRoutes(DatabaseConfig(dbURL.get, dbUsername.get, dbPassword.get))
+    RootRoutes(dslContext)
   )
   
