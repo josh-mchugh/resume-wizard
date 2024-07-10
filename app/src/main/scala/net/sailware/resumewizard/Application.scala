@@ -88,6 +88,16 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/social")
   def postWizardSocial(name: String, url: String) =
+    if dslContext.fetchCount(RESUME_SOCIALS) > 0 then
+      val resumeDetail = dslContext.selectFrom(RESUME_SOCIALS).fetchOne()
+      dslContext.update(RESUME_SOCIALS)
+        .set(RESUME_SOCIALS.NAME, name)
+        .set(RESUME_SOCIALS.URL, url)
+        .execute()
+    else
+      dslContext.insertInto(RESUME_SOCIALS, RESUME_SOCIALS.NAME, RESUME_SOCIALS.URL)
+        .values(name, url)
+        .execute()
     cask.Redirect("/wizard/experience")
 
   @cask.get("/wizard/experience")
@@ -412,6 +422,7 @@ object Application extends cask.Main:
   val flyway = Flyway.configure()
     .dataSource(databaseConfig.url, databaseConfig.username, databaseConfig.password)
     .locations("filesystem:./app/src/main/resources/db/migration")
+    .validateMigrationNaming(true)
     .load()
   flyway.migrate()
 
@@ -428,3 +439,14 @@ object Application extends cask.Main:
     RootRoutes(dslContext)
   )
   
+
+
+
+
+
+
+
+
+
+
+
