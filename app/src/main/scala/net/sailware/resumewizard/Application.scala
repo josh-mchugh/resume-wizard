@@ -66,7 +66,13 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/detail")
   def getWizardName() =
-    buildPage(Step.Detail)
+    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
+      val result = dslContext.fetchOne(RESUME_DETAILS)
+      val form = buildForm(Step.Detail, buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary()))
+      buildPage2(buildSteps(Step.Detail), form)
+    else
+      val form = buildForm(Step.Detail, buildNameAndTitleForm("", "", ""))
+      buildPage2(buildSteps(Step.Detail), form) 
 
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
@@ -132,6 +138,57 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   @cask.get("/wizard/review")
   def getWizardReview() =
     buildPage(Step.Review)
+
+  def buildPage2(steps: Frag, content: Frag) =
+    doctype("html")(
+      html(
+        title("Resume Wizard"),
+        head(
+          link(rel := "stylesheet", href := "/static/style.min.css"),
+          link(rel := "stylesheet", href := "/static/styles.css")
+        ),
+        body(
+          div(cls := "main-wrapper")(
+            // top navigation
+            nav(cls := "horizontal-menu")(
+              div(cls := "navbar top-navbar")(
+                div(cls := "container")(
+                  div(cls := "navbar-content")(
+                    a(cls :="navbar-brand", href := "#")("Resume", span("Wizard"))
+                  )
+                )
+              )
+            ),
+            // Page Content
+            div(cls := "page-wrapper")(
+              div(cls := "page-content")(
+                // Wizardly
+                div(cls := "row")(
+                  div(cls := "col-md-12 stretch-card")(
+                    div(cls := "card")(
+                      div(cls := "card-body")(
+                        h4(cls := "card-title")("Resume Wizard"),
+                        div(cls := "wizardly")(
+                          steps,
+                          content,
+                        )
+                      )
+                    )
+                  )
+                )
+              ),
+              // Footer
+              footer(cls := "footer border-top")(
+                div(cls := "container d-flex flex-column flex-md-row align-items-center justify-content-between py-3 small")(
+                  p(cls := "text-muted mb-1 mb-md-0")("Copyright 2024"),
+                  p(cls := "text-muted")("Maded For Fun")
+                )
+              )
+            )
+          )
+        )
+      )
+    )
 
   def buildPage(step: Step) =
     doctype("html")(
@@ -204,7 +261,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   def buildContent(step: Step) =
     step match
-      case Step.Detail => buildForm(step, buildNameAndTitleForm())
+      case Step.Detail => buildForm(step, buildNameAndTitleForm("", "", ""))
       case Step.Contact => buildForm(step, buildContactsForm())
       case Step.Social => buildForm(step, buildSocialsForm())
       case Step.Experience => buildForm(step, buildExperienceForm())
@@ -222,19 +279,19 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       )
     )
 
-  def buildNameAndTitleForm() =
+  def buildNameAndTitleForm(resumeName: String, title: String, summary: String) =
     List(
       div()(
         label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name")
+        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name", value := resumeName)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title")
+        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title", value := title)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Summary"),
-        textarea(cls := "form-control", rows := 3, name := "summary",  placeholder := "Summary of your current or previous role")
+        textarea(cls := "form-control", rows := 3, name := "summary",  placeholder := "Summary of your current or previous role")(summary)
       )
     )
 
