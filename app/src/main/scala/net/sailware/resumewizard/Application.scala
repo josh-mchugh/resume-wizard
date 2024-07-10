@@ -59,10 +59,27 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/contact")
   def getWizardContact() =
-    buildPage(Step.Contact)
+    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
+      val result = dslContext.fetchOne(RESUME_DETAILS)
+      val form = buildForm(Step.Contact, buildContactsForm(result.getPhone(), result.getEmail(), result.getLocation()))
+      buildPage2(buildSteps(Step.Contact), form)
+    else
+      val form = buildForm(Step.Contact, buildContactsForm("", "", ""))
+      buildPage2(buildSteps(Step.Contact), form) 
 
   @cask.postForm("/wizard/contact")
   def postWizardContact(phone: String, email: String, location: String) =
+    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
+      val resumeDetail = dslContext.selectFrom(RESUME_DETAILS).fetchOne()
+      dslContext.update(RESUME_DETAILS)
+        .set(RESUME_DETAILS.PHONE, phone)
+        .set(RESUME_DETAILS.EMAIL, email)
+        .set(RESUME_DETAILS.LOCATION, location)
+        .execute()
+    else
+      dslContext.insertInto(RESUME_DETAILS, RESUME_DETAILS.PHONE, RESUME_DETAILS.EMAIL, RESUME_DETAILS.LOCATION)
+        .values(phone, email, location)
+        .execute()
     cask.Redirect("/wizard/social")
 
   @cask.get("/wizard/social")
@@ -224,7 +241,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   def buildContent(step: Step) =
     step match
       case Step.Detail => buildForm(step, buildNameAndTitleForm("", "", ""))
-      case Step.Contact => buildForm(step, buildContactsForm())
+      case Step.Contact => buildForm(step, buildContactsForm("", "", ""))
       case Step.Social => buildForm(step, buildSocialsForm())
       case Step.Experience => buildForm(step, buildExperienceForm())
       case Step.Skill => buildForm(step, buildSkillForm())
@@ -257,19 +274,19 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       )
     )
 
-  def buildContactsForm() =
+  def buildContactsForm(phone: String, email: String, location: String) =
     List(
       div()(
         label(cls := "form-label")("Phone Number"),
-        input(cls := "form-control", `type` := "text", name := "phone", placeholder := "Phone Number")
+        input(cls := "form-control", `type` := "text", name := "phone", placeholder := "Phone Number", value := phone)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Email Address"),
-        input(cls := "form-control", `type` := "text", name := "email", placeholder := "Email Address")
+        input(cls := "form-control", `type` := "text", name := "email", placeholder := "Email Address", value := email)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location")
+        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location", value := location)
       )
     )
 
