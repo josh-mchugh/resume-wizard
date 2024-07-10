@@ -23,7 +23,6 @@ case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends
   initialize()
 
 case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-
   enum Step(val label: String):
     case Detail extends Step("Name & Title")
     case Contact extends Step("Contacts")
@@ -32,37 +31,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     case Skill extends Step("Skills")
     case Certification extends Step("Certifications")
     case Review extends Step("Review")
-
-  case class Social(val name: String, val url: String)
-  case class Experience(
-    val title: String,
-    val organization: String,
-    val duration: String,
-    val location: String,
-    val description: String,
-    val skills: String
-  )
-  case class Skill(val name: String, val rating: Int)
-  case class Certification(val title: String, val organization: String, val year: String, val location: String)
-  case class Resume(
-    val name: String,
-    val title: String,
-    val summary: String,
-    val phone: String,
-    val email: String,
-    val location: String,
-    val social: Social,
-    val experience: Experience,
-    val skill: Skill,
-    val certification: Certification
-  )
-  var resume = Resume(
-    "", "", "", "", "", "",
-    Social("", ""),
-    Experience("", "", "", "", "", ""),
-    Skill("", 0),
-    Certification("", "", "", "")
-  )
 
   @cask.get("/wizard/detail")
   def getWizardName() =
@@ -76,7 +44,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
-    resume = resume.copy(name = name, title = title, summary = summary)
     if dslContext.fetchCount(RESUME_DETAILS) > 0 then
       val resumeDetail = dslContext.selectFrom(RESUME_DETAILS).fetchOne()
       dslContext.update(RESUME_DETAILS)
@@ -96,7 +63,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/contact")
   def postWizardContact(phone: String, email: String, location: String) =
-    resume = resume.copy(phone = phone, email = email, location = location)
     cask.Redirect("/wizard/social")
 
   @cask.get("/wizard/social")
@@ -105,7 +71,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/social")
   def postWizardSocial(name: String, url: String) =
-    resume = resume.copy(social = Social(name, url))
     cask.Redirect("/wizard/experience")
 
   @cask.get("/wizard/experience")
@@ -114,7 +79,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/experience")
   def postWizardExperience(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
-    resume = resume.copy(experience = Experience(title = title, organization = organization, duration = duration, location = location, description = description, skills = skills))
     cask.Redirect("/wizard/skill")
 
   @cask.get("/wizard/skill")
@@ -123,7 +87,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/skill")
   def postWizardSkill(name: String, rating: Int) =
-    resume = resume.copy(skill = Skill(name, rating))
     cask.Redirect("/wizard/certification")
 
   @cask.get("/wizard/certification")
@@ -132,7 +95,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/certification")
   def postWizardCertification(title: String, organization: String, year: String, location: String) =
-    resume = resume.copy(certification = Certification(title, organization, year, location))
     cask.Redirect("/wizard/review")
 
   @cask.get("/wizard/review")
@@ -394,7 +356,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   def buildReview(step: Step) =
     div()(
       div(id := "main")(
-        p(strong("Name: "), resume.name),
+/*        p(strong("Name: "), resume.name),
         p(strong("Title: "), resume.title),
         p(strong("Summary: "), resume.summary),
         p(strong("Phone: "), resume.phone),
@@ -414,6 +376,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
         p(strong("Certification Organization: "), resume.certification.organization),
         p(strong("Certification Year: "), resume.certification.year),
         p(strong("Certification Location: "), resume.certification.location),
+*/
       )
     )
 
