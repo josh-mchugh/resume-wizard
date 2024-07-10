@@ -84,7 +84,13 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/social")
   def getWizardSocial() =
-    buildPage(Step.Social)
+    if dslContext.fetchCount(RESUME_SOCIALS) > 0 then
+      val result = dslContext.fetchOne(RESUME_SOCIALS)
+      val form = buildForm(Step.Social, buildSocialsForm(result.getName(), result.getUrl()))
+      buildPage2(buildSteps(Step.Social), form)
+    else
+      val form = buildForm(Step.Social, buildSocialsForm("", ""))
+      buildPage2(buildSteps(Step.Social), form) 
 
   @cask.postForm("/wizard/social")
   def postWizardSocial(name: String, url: String) =
@@ -252,7 +258,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     step match
       case Step.Detail => buildForm(step, buildNameAndTitleForm("", "", ""))
       case Step.Contact => buildForm(step, buildContactsForm("", "", ""))
-      case Step.Social => buildForm(step, buildSocialsForm())
+      case Step.Social => buildForm(step, buildSocialsForm("", ""))
       case Step.Experience => buildForm(step, buildExperienceForm())
       case Step.Skill => buildForm(step, buildSkillForm())
       case Step.Certification => buildForm(step, buildCertificationForm())
@@ -300,15 +306,15 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       )
     )
 
-  def buildSocialsForm() =
+  def buildSocialsForm(socialName: String, url: String) =
     List(
       div()(
         label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name")
+        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name", value := socialName)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("URL"),
-        input(cls := "form-control", `type` := "text", name := "url", placeholder := "URL")
+        input(cls := "form-control", `type` := "text", name := "url", placeholder := "URL", value := url)
       )
     )
 
