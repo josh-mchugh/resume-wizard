@@ -108,7 +108,13 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/experience")
   def getWizardExperience() =
-    buildPage(Step.Experience)
+    if dslContext.fetchCount(RESUME_EXPERIENCES) > 0 then
+      val result = dslContext.fetchOne(RESUME_EXPERIENCES)
+      val form = buildForm(Step.Experience, buildExperienceForm(result.getTitle(), result.getOrganization(), result.getDuration(), result.getLocation(), result.getDescription(), result.getSkills()))
+      buildPage2(buildSteps(Step.Experience), form)
+    else
+      val form = buildForm(Step.Experience, buildExperienceForm("", "", "", "", "", ""))
+      buildPage2(buildSteps(Step.Experience), form) 
 
   @cask.postForm("/wizard/experience")
   def postWizardExperience(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
@@ -273,7 +279,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       case Step.Detail => buildForm(step, buildNameAndTitleForm("", "", ""))
       case Step.Contact => buildForm(step, buildContactsForm("", "", ""))
       case Step.Social => buildForm(step, buildSocialsForm("", ""))
-      case Step.Experience => buildForm(step, buildExperienceForm())
+      case Step.Experience => buildForm(step, buildExperienceForm("", "", "", "", "", ""))
       case Step.Skill => buildForm(step, buildSkillForm())
       case Step.Certification => buildForm(step, buildCertificationForm())
       case Step.Review => buildReview(step)
@@ -332,31 +338,31 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       )
     )
 
-  def buildExperienceForm() =
+  def buildExperienceForm(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
     List(
       div()(
         label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title")
+        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title", value := title)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Organization"),
-        input(cls := "form-control", `type` := "text", name := "organization", placeholder := "Organization")
+        input(cls := "form-control", `type` := "text", name := "organization", placeholder := "Organization", value := organization)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Duration"),
-        input(cls := "form-control", `type` := "text", name := "duration",  placeholder := "Duration")
+        input(cls := "form-control", `type` := "text", name := "duration",  placeholder := "Duration", value := duration)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location")
+        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location", value := location)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Description"),
-        textarea(cls := "form-control", rows := 3, name := "description", placeholder := "Description")
+        textarea(cls := "form-control", rows := 3, name := "description", placeholder := "Description")(description)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Skills"),
-        textarea(cls := "form-control", rows := 3, name := "skills",  placeholder := "Skills")
+        textarea(cls := "form-control", rows := 3, name := "skills",  placeholder := "Skills")(skills)
       )
     )
 
