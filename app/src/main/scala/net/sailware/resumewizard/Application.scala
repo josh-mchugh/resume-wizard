@@ -112,6 +112,20 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.postForm("/wizard/experience")
   def postWizardExperience(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
+    if dslContext.fetchCount(RESUME_EXPERIENCES) > 0 then
+      val resumeDetail = dslContext.selectFrom(RESUME_EXPERIENCES).fetchOne()
+      dslContext.update(RESUME_EXPERIENCES)
+        .set(RESUME_EXPERIENCES.TITLE, title)
+        .set(RESUME_EXPERIENCES.ORGANIZATION, organization)
+        .set(RESUME_EXPERIENCES.DURATION, duration)
+        .set(RESUME_EXPERIENCES.LOCATION, location)
+        .set(RESUME_EXPERIENCES.DESCRIPTION, description)
+        .set(RESUME_EXPERIENCES.SKILLS, skills)
+        .execute()
+    else
+      dslContext.insertInto(RESUME_EXPERIENCES, RESUME_EXPERIENCES.TITLE, RESUME_EXPERIENCES.ORGANIZATION, RESUME_EXPERIENCES.DURATION, RESUME_EXPERIENCES.LOCATION, RESUME_EXPERIENCES.DESCRIPTION, RESUME_EXPERIENCES.SKILLS)
+        .values(title, organization, duration, location, description, skills)
+        .execute()
     cask.Redirect("/wizard/skill")
 
   @cask.get("/wizard/skill")
