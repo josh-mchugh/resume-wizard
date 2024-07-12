@@ -160,10 +160,28 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/certification")
   def getWizardCertification() =
-    buildPage(Step.Certification)
+    if dslContext.fetchCount(RESUME_CERTIFICATIONS) > 0 then
+      val result = dslContext.fetchOne(RESUME_CERTIFICATIONS)
+      val form = buildForm(Step.Certification, buildCertificationForm(result.getTitle(), result.getOrganization(), result.getYear(), result.getLocation()))
+      buildPage2(buildSteps(Step.Certification), form)
+    else
+      val form = buildForm(Step.Certification, buildCertificationForm("", "", "", ""))
+      buildPage2(buildSteps(Step.Certification), form)
 
   @cask.postForm("/wizard/certification")
   def postWizardCertification(title: String, organization: String, year: String, location: String) =
+    if dslContext.fetchCount(RESUME_CERTIFICATIONS) > 0 then
+      val resumeDetail = dslContext.selectFrom(RESUME_CERTIFICATIONS).fetchOne()
+      dslContext.update(RESUME_CERTIFICATIONS)
+        .set(RESUME_CERTIFICATIONS.TITLE, title)
+        .set(RESUME_CERTIFICATIONS.ORGANIZATION, organization)
+        .set(RESUME_CERTIFICATIONS.YEAR, year)
+        .set(RESUME_CERTIFICATIONS.LOCATION, location)
+        .execute()
+    else
+      dslContext.insertInto(RESUME_CERTIFICATIONS, RESUME_CERTIFICATIONS.TITLE, RESUME_CERTIFICATIONS.ORGANIZATION, RESUME_CERTIFICATIONS.YEAR, RESUME_CERTIFICATIONS.LOCATION)
+        .values(title, organization, year, location)
+        .execute()
     cask.Redirect("/wizard/review")
 
   @cask.get("/wizard/review")
@@ -297,7 +315,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       case Step.Social => buildForm(step, buildSocialsForm("", ""))
       case Step.Experience => buildForm(step, buildExperienceForm("", "", "", "", "", ""))
       case Step.Skill => buildForm(step, buildSkillForm("", 0))
-      case Step.Certification => buildForm(step, buildCertificationForm())
+      case Step.Certification => buildForm(step, buildCertificationForm("", "", "", ""))
       case Step.Review => buildReview(step)
 
   def buildForm(step: Step, formInputs: Frag) =
@@ -394,23 +412,23 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       )
     )
 
-  def buildCertificationForm() =
+  def buildCertificationForm(title: String, organization: String, year: String, location: String) =
     List(
       div()(
         label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title")
+        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title", value := title)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Organization"),
-        input(cls := "form-control", `type` := "text", name := "organization", placeholder := "Organization")
+        input(cls := "form-control", `type` := "text", name := "organization", placeholder := "Organization", value := organization)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Year"),
-        input(cls := "form-control", `type` := "text", name := "year", placeholder := "Year")
+        input(cls := "form-control", `type` := "text", name := "year", placeholder := "Year", value := year)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location")
+        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location", value := location)
       )
     )
 
