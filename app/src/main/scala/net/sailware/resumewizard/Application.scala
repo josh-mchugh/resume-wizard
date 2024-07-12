@@ -136,10 +136,26 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/skill")
   def getWizardSkill() =
-    buildPage(Step.Skill)
+    if dslContext.fetchCount(RESUME_SKILLS) > 0 then
+      val result = dslContext.fetchOne(RESUME_SKILLS)
+      val form = buildForm(Step.Skill, buildSkillForm(result.getName(), result.getRating()))
+      buildPage2(buildSteps(Step.Skill), form)
+    else
+      val form = buildForm(Step.Skill, buildSkillForm("", 0))
+      buildPage2(buildSteps(Step.Skill), form) 
 
   @cask.postForm("/wizard/skill")
-  def postWizardSkill(name: String, rating: Int) =
+  def postWizardSkill(name: String, rating: Short) =
+    if dslContext.fetchCount(RESUME_SKILLS) > 0 then
+      val resumeDetail = dslContext.selectFrom(RESUME_SKILLS).fetchOne()
+      dslContext.update(RESUME_SKILLS)
+        .set(RESUME_SKILLS.NAME, name)
+        .set(RESUME_SKILLS.RATING, rating)
+        .execute()
+    else
+      dslContext.insertInto(RESUME_SKILLS, RESUME_SKILLS.NAME, RESUME_SKILLS.RATING)
+        .values(name, rating)
+        .execute()
     cask.Redirect("/wizard/certification")
 
   @cask.get("/wizard/certification")
@@ -280,7 +296,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       case Step.Contact => buildForm(step, buildContactsForm("", "", ""))
       case Step.Social => buildForm(step, buildSocialsForm("", ""))
       case Step.Experience => buildForm(step, buildExperienceForm("", "", "", "", "", ""))
-      case Step.Skill => buildForm(step, buildSkillForm())
+      case Step.Skill => buildForm(step, buildSkillForm("", 0))
       case Step.Certification => buildForm(step, buildCertificationForm())
       case Step.Review => buildReview(step)
 
@@ -366,15 +382,15 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       )
     )
 
-  def buildSkillForm() =
+  def buildSkillForm(skillName: String, rating: Short) =
     List(
       div()(
         label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name")
+        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name", value := skillName)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("Rating"),
-        input(cls := "form-range", `type` := "range", name := "rating", min := 0, max := 5, step := 1)
+        input(cls := "form-range", `type` := "range", name := "rating", min := 0, max := 5, step := 1, value := rating)
       )
     )
 
