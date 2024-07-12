@@ -37,10 +37,10 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     if dslContext.fetchCount(RESUME_DETAILS) > 0 then
       val result = dslContext.fetchOne(RESUME_DETAILS)
       val form = buildForm(Step.Detail, buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary()))
-      buildPage2(buildSteps(Step.Detail), form)
+      buildPage(buildSteps(Step.Detail), form)
     else
       val form = buildForm(Step.Detail, buildNameAndTitleForm("", "", ""))
-      buildPage2(buildSteps(Step.Detail), form) 
+      buildPage(buildSteps(Step.Detail), form) 
 
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
@@ -62,10 +62,10 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     if dslContext.fetchCount(RESUME_DETAILS) > 0 then
       val result = dslContext.fetchOne(RESUME_DETAILS)
       val form = buildForm(Step.Contact, buildContactsForm(result.getPhone(), result.getEmail(), result.getLocation()))
-      buildPage2(buildSteps(Step.Contact), form)
+      buildPage(buildSteps(Step.Contact), form)
     else
       val form = buildForm(Step.Contact, buildContactsForm("", "", ""))
-      buildPage2(buildSteps(Step.Contact), form) 
+      buildPage(buildSteps(Step.Contact), form) 
 
   @cask.postForm("/wizard/contact")
   def postWizardContact(phone: String, email: String, location: String) =
@@ -87,10 +87,10 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     if dslContext.fetchCount(RESUME_SOCIALS) > 0 then
       val result = dslContext.fetchOne(RESUME_SOCIALS)
       val form = buildForm(Step.Social, buildSocialsForm(result.getName(), result.getUrl()))
-      buildPage2(buildSteps(Step.Social), form)
+      buildPage(buildSteps(Step.Social), form)
     else
       val form = buildForm(Step.Social, buildSocialsForm("", ""))
-      buildPage2(buildSteps(Step.Social), form) 
+      buildPage(buildSteps(Step.Social), form) 
 
   @cask.postForm("/wizard/social")
   def postWizardSocial(name: String, url: String) =
@@ -111,10 +111,10 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     if dslContext.fetchCount(RESUME_EXPERIENCES) > 0 then
       val result = dslContext.fetchOne(RESUME_EXPERIENCES)
       val form = buildForm(Step.Experience, buildExperienceForm(result.getTitle(), result.getOrganization(), result.getDuration(), result.getLocation(), result.getDescription(), result.getSkills()))
-      buildPage2(buildSteps(Step.Experience), form)
+      buildPage(buildSteps(Step.Experience), form)
     else
       val form = buildForm(Step.Experience, buildExperienceForm("", "", "", "", "", ""))
-      buildPage2(buildSteps(Step.Experience), form) 
+      buildPage(buildSteps(Step.Experience), form) 
 
   @cask.postForm("/wizard/experience")
   def postWizardExperience(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
@@ -139,10 +139,10 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     if dslContext.fetchCount(RESUME_SKILLS) > 0 then
       val result = dslContext.fetchOne(RESUME_SKILLS)
       val form = buildForm(Step.Skill, buildSkillForm(result.getName(), result.getRating()))
-      buildPage2(buildSteps(Step.Skill), form)
+      buildPage(buildSteps(Step.Skill), form)
     else
       val form = buildForm(Step.Skill, buildSkillForm("", 0))
-      buildPage2(buildSteps(Step.Skill), form) 
+      buildPage(buildSteps(Step.Skill), form) 
 
   @cask.postForm("/wizard/skill")
   def postWizardSkill(name: String, rating: Short) =
@@ -163,10 +163,10 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     if dslContext.fetchCount(RESUME_CERTIFICATIONS) > 0 then
       val result = dslContext.fetchOne(RESUME_CERTIFICATIONS)
       val form = buildForm(Step.Certification, buildCertificationForm(result.getTitle(), result.getOrganization(), result.getYear(), result.getLocation()))
-      buildPage2(buildSteps(Step.Certification), form)
+      buildPage(buildSteps(Step.Certification), form)
     else
       val form = buildForm(Step.Certification, buildCertificationForm("", "", "", ""))
-      buildPage2(buildSteps(Step.Certification), form)
+      buildPage(buildSteps(Step.Certification), form)
 
   @cask.postForm("/wizard/certification")
   def postWizardCertification(title: String, organization: String, year: String, location: String) =
@@ -186,9 +186,9 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/review")
   def getWizardReview() =
-    buildPage(Step.Review)
+    buildPage(buildSteps(Step.Review), buildReview(Step.Review))
 
-  def buildPage2(steps: Frag, content: Frag) =
+  def buildPage(steps: Frag, content: Frag) =
     doctype("html")(
       html(
         title("Resume Wizard"),
@@ -220,57 +220,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
                         div(cls := "wizardly")(
                           steps,
                           content,
-                        )
-                      )
-                    )
-                  )
-                )
-              ),
-              // Footer
-              footer(cls := "footer border-top")(
-                div(cls := "container d-flex flex-column flex-md-row align-items-center justify-content-between py-3 small")(
-                  p(cls := "text-muted mb-1 mb-md-0")("Copyright 2024"),
-                  p(cls := "text-muted")("Maded For Fun")
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-
-  def buildPage(step: Step) =
-    doctype("html")(
-      html(
-        title("Resume Wizard"),
-        head(
-          link(rel := "stylesheet", href := "/static/style.min.css"),
-          link(rel := "stylesheet", href := "/static/styles.css")
-        ),
-        body(
-          div(cls := "main-wrapper")(
-            // top navigation
-            nav(cls := "horizontal-menu")(
-              div(cls := "navbar top-navbar")(
-                div(cls := "container")(
-                  div(cls := "navbar-content")(
-                    a(cls :="navbar-brand", href := "#")("Resume", span("Wizard"))
-                  )
-                )
-              )
-            ),
-            // Page Content
-            div(cls := "page-wrapper")(
-              div(cls := "page-content")(
-                // Wizardly
-                div(cls := "row")(
-                  div(cls := "col-md-12 stretch-card")(
-                    div(cls := "card")(
-                      div(cls := "card-body")(
-                        h4(cls := "card-title")("Resume Wizard"),
-                        div(cls := "wizardly")(
-                          buildSteps(step),
-                          buildContent(step),
                         )
                       )
                     )
