@@ -191,7 +191,8 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   def getWizardReview() =
     val detailsOption = dslContext.fetchOptional(RESUME_DETAILS).toScala
     val socialsOption = dslContext.fetchOptional(RESUME_SOCIALS).toScala
-    buildPage(buildSteps(Step.Review), buildReview(detailsOption, socialsOption))
+    val experiencesOption = dslContext.fetchOptional(RESUME_EXPERIENCES).toScala
+    buildPage(buildSteps(Step.Review), buildReview(detailsOption, socialsOption, experiencesOption))
 
   def buildPage(steps: Frag, content: Frag) =
     doctype("html")(
@@ -384,7 +385,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   def hasNext(step: Step) =
     step.ordinal != Step.values.length - 1
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -399,17 +400,21 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       p(strong("Social URL: "), socialsOption.get.getUrl()),
     )
 
+    val experiences = List(
+      p(strong("Experience Title: "), experiencesOption.get.getTitle()),
+      p(strong("Experience Organization: "), experiencesOption.get.getOrganization()),
+      p(strong("Experience Duration: "), experiencesOption.get.getDuration()),
+      p(strong("Experience Location: "), experiencesOption.get.getLocation()),
+      p(strong("Experience Description: "), experiencesOption.get.getDescription()),
+      p(strong("Experience Skills: "), experiencesOption.get.getSkills()),
+    )
+
     div()(
       div(id := "main")(
         if detailsOption.isDefined then details else frag(),
         if socialsOption.isDefined then socials else frag(),
+        if experiencesOption.isDefined then experiences else frag(),
 /*     
-        p(strong("Experience Title: "), resume.experience.title),
-        p(strong("Experience Organization: "), resume.experience.organization),
-        p(strong("Experience Duration: "), resume.experience.duration),
-        p(strong("Experience Location: "), resume.experience.location),
-        p(strong("Experience Description: "), resume.experience.description),
-        p(strong("Experience Skills: "), resume.experience.skills),
         p(strong("Skill Name: "), resume.skill.name),
         p(strong("Skill Rating: "), resume.skill.rating),
         p(strong("Certification Title: ", resume.certification.title)),
