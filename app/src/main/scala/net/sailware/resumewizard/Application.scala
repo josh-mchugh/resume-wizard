@@ -14,6 +14,9 @@ import org.jooq.Record
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import net.sailware.resumewizard.jooq.Tables.*
+import net.sailware.resumewizard.jooq.tables.records.*
+
+import scala.jdk.OptionConverters.RichOptional
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
@@ -186,7 +189,8 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/review")
   def getWizardReview() =
-    buildPage(buildSteps(Step.Review), buildReview(Step.Review))
+    val detailsOption: Option[ResumeDetailsRecord] = dslContext.fetchOptional(RESUME_DETAILS).toScala
+    buildPage(buildSteps(Step.Review), buildReview(detailsOption))
 
   def buildPage(steps: Frag, content: Frag) =
     doctype("html")(
@@ -256,16 +260,6 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     li(cls := "wizardly-step")(
       stepText
     )
-
-  def buildContent(step: Step) =
-    step match
-      case Step.Detail => buildForm(step, buildNameAndTitleForm("", "", ""))
-      case Step.Contact => buildForm(step, buildContactsForm("", "", ""))
-      case Step.Social => buildForm(step, buildSocialsForm("", ""))
-      case Step.Experience => buildForm(step, buildExperienceForm("", "", "", "", "", ""))
-      case Step.Skill => buildForm(step, buildSkillForm("", 0))
-      case Step.Certification => buildForm(step, buildCertificationForm("", "", "", ""))
-      case Step.Review => buildReview(step)
 
   def buildForm(step: Step, formInputs: Frag) =
     form(method := "post", action := s"/wizard/${step.toString().toLowerCase()}")(
@@ -389,16 +383,20 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   def hasNext(step: Step) =
     step.ordinal != Step.values.length - 1
 
-  def buildReview(step: Step) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord]) =
+    val details = List(
+        p(strong("Name: "), detailsOption.get.getName()),
+        p(strong("Title: "), detailsOption.get.getTitle()),
+        p(strong("Summary: "), detailsOption.get.getSummary()),
+        p(strong("Phone: "), detailsOption.get.getPhone()),
+        p(strong("Email: "), detailsOption.get.getEmail()),
+        p(strong("Location: "), detailsOption.get.getLocation()),
+    )
+
     div()(
       div(id := "main")(
-/*        p(strong("Name: "), resume.name),
-        p(strong("Title: "), resume.title),
-        p(strong("Summary: "), resume.summary),
-        p(strong("Phone: "), resume.phone),
-        p(strong("Email: "), resume.email),
-        p(strong("Location: "), resume.location),
-        p(strong("Social Name: "), resume.social.name),
+        if detailsOption.isDefined then details else frag(),
+/*        p(strong("Social Name: "), resume.social.name),
         p(strong("Social URL: "), resume.social.url),
         p(strong("Experience Title: "), resume.experience.title),
         p(strong("Experience Organization: "), resume.experience.organization),
