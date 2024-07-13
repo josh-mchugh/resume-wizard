@@ -189,8 +189,9 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
 
   @cask.get("/wizard/review")
   def getWizardReview() =
-    val detailsOption: Option[ResumeDetailsRecord] = dslContext.fetchOptional(RESUME_DETAILS).toScala
-    buildPage(buildSteps(Step.Review), buildReview(detailsOption))
+    val detailsOption = dslContext.fetchOptional(RESUME_DETAILS).toScala
+    val socialsOption = dslContext.fetchOptional(RESUME_SOCIALS).toScala
+    buildPage(buildSteps(Step.Review), buildReview(detailsOption, socialsOption))
 
   def buildPage(steps: Frag, content: Frag) =
     doctype("html")(
@@ -383,7 +384,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   def hasNext(step: Step) =
     step.ordinal != Step.values.length - 1
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -393,11 +394,16 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
         p(strong("Location: "), detailsOption.get.getLocation()),
     )
 
+    val socials = List(
+      p(strong("Social Name: "), socialsOption.get.getName()),
+      p(strong("Social URL: "), socialsOption.get.getUrl()),
+    )
+
     div()(
       div(id := "main")(
         if detailsOption.isDefined then details else frag(),
-/*        p(strong("Social Name: "), resume.social.name),
-        p(strong("Social URL: "), resume.social.url),
+        if socialsOption.isDefined then socials else frag(),
+/*     
         p(strong("Experience Title: "), resume.experience.title),
         p(strong("Experience Organization: "), resume.experience.organization),
         p(strong("Experience Duration: "), resume.experience.duration),
