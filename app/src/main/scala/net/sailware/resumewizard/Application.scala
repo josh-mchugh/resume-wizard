@@ -192,7 +192,9 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     val detailsOption = dslContext.fetchOptional(RESUME_DETAILS).toScala
     val socialsOption = dslContext.fetchOptional(RESUME_SOCIALS).toScala
     val experiencesOption = dslContext.fetchOptional(RESUME_EXPERIENCES).toScala
-    buildPage(buildSteps(Step.Review), buildReview(detailsOption, socialsOption, experiencesOption))
+    val skillsOption = dslContext.fetchOptional(RESUME_SKILLS).toScala
+    val certificationsOption = dslContext.fetchOptional(RESUME_CERTIFICATIONS).toScala
+    buildPage(buildSteps(Step.Review), buildReview(detailsOption, socialsOption, experiencesOption, skillsOption, certificationsOption))
 
   def buildPage(steps: Frag, content: Frag) =
     doctype("html")(
@@ -385,7 +387,7 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
   def hasNext(step: Step) =
     step.ordinal != Step.values.length - 1
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -409,19 +411,25 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       p(strong("Experience Skills: "), experiencesOption.get.getSkills()),
     )
 
+    val skills = List(
+      p(strong("Skill Name: "), skillsOption.get.getName()),
+      p(strong("Skill Rating: "), skillsOption.get.getRating().toString()),
+    )
+
+    val certifications = List(
+      p(strong("Certification Title: ", certificationsOption.get.getTitle())),
+      p(strong("Certification Organization: "), certificationsOption.get.getOrganization()),
+      p(strong("Certification Year: "), certificationsOption.get.getYear()),
+      p(strong("Certification Location: "), certificationsOption.get.getLocation()),
+    )
+
     div()(
       div(id := "main")(
         if detailsOption.isDefined then details else frag(),
         if socialsOption.isDefined then socials else frag(),
         if experiencesOption.isDefined then experiences else frag(),
-/*     
-        p(strong("Skill Name: "), resume.skill.name),
-        p(strong("Skill Rating: "), resume.skill.rating),
-        p(strong("Certification Title: ", resume.certification.title)),
-        p(strong("Certification Organization: "), resume.certification.organization),
-        p(strong("Certification Year: "), resume.certification.year),
-        p(strong("Certification Location: "), resume.certification.location),
-*/
+        if skillsOption.isDefined then skills else frag(),
+        if certificationsOption.isDefined then certifications else frag()
       )
     )
 
