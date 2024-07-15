@@ -7,6 +7,7 @@ import scalatags.Text.tags2.title
 import java.sql.{Connection, DriverManager}
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.undertow.server.handlers.form.FormParserFactory
 import org.flywaydb.core.Flyway
 import org.jooq.DSLContext
 import org.jooq.Result
@@ -16,6 +17,7 @@ import org.jooq.impl.DSL
 import net.sailware.resumewizard.jooq.Tables.*
 import net.sailware.resumewizard.jooq.tables.records.*
 
+import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.jdk.OptionConverters.RichOptional
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
@@ -95,18 +97,38 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
       val form = buildForm(Step.Social, buildSocialsForm("", ""))
       buildPage(buildSteps(Step.Social), form) 
 
-  @cask.postForm("/wizard/social")
-  def postWizardSocial(name: String, url: String) =
+  case class SocialForm(val name: String, val url: String)
+
+  @cask.post("/wizard/social")
+  def postWizardSocial(request: cask.Request) =
+    val formData = FormParserFactory.builder().build().createParser(request.exchange).parseBlocking()
+    var data = Map.empty[String, SocialForm]
+    for key <- formData.iterator().asScala do
+      data = key match
+        case s"form[$i].$variable" =>
+          if data.contains(i) then
+            variable match
+              case "name" => data + (i -> data(i).copy(name = formData.get(key).element().getValue()))
+              case "url" => data + (i -> data(i).copy(url = formData.get(key).element().getValue()))
+              case _ => data
+          else
+            variable match
+              case "name" => data + (i -> SocialForm(formData.get(key).element().getValue(), ""))
+              case "url" => data + (i -> SocialForm("", formData.get(key).element().getValue()))
+              case _ => data
+        case _ => data
+
     if dslContext.fetchCount(RESUME_SOCIALS) > 0 then
       val resumeDetail = dslContext.selectFrom(RESUME_SOCIALS).fetchOne()
       dslContext.update(RESUME_SOCIALS)
-        .set(RESUME_SOCIALS.NAME, name)
-        .set(RESUME_SOCIALS.URL, url)
+        .set(RESUME_SOCIALS.NAME, data("0").name)
+        .set(RESUME_SOCIALS.URL, data("0").url)
         .execute()
     else
       dslContext.insertInto(RESUME_SOCIALS, RESUME_SOCIALS.NAME, RESUME_SOCIALS.URL)
-        .values(name, url)
+        .values(data("0").name, data("0").url)
         .execute()
+ 
     cask.Redirect("/wizard/experience")
 
   @cask.get("/wizard/experience")
@@ -311,12 +333,21 @@ case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: 
     List(
       div()(
         label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name", value := socialName)
+        input(cls := "form-control", `type` := "text", name := "form[0].name", placeholder := "Name", value := socialName)
       ),
       div(cls := "mt-3")(
         label(cls := "form-label")("URL"),
-        input(cls := "form-control", `type` := "text", name := "url", placeholder := "URL", value := url)
-      )
+        input(cls := "form-control", `type` := "text", name := "form[0].url", placeholder := "URL", value := url)
+      ),
+      hr(),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Name"),
+        input(cls := "form-control", `type` := "text", name := "form[1].name", placeholder := "Name", value := socialName)
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("URL"),
+        input(cls := "form-control", `type` := "text", name := "form[1].url", placeholder := "URL", value := url)
+      ),
     )
 
   def buildExperienceForm(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
