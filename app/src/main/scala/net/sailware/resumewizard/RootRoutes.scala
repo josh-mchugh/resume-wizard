@@ -8,6 +8,7 @@ import io.undertow.server.handlers.form.FormParserFactory
 import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.*
 import net.sailware.resumewizard.jooq.tables.records.*
+import net.sailware.resumewizard.resume.Step
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.jdk.OptionConverters.RichOptional
@@ -15,14 +16,6 @@ import scala.jdk.OptionConverters.RichOptional
 
 case class RootRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
   val dslContext = databaseResource.ctx
-  enum Step(val label: String):
-    case Detail extends Step("Name & Title")
-    case Contact extends Step("Contacts")
-    case Social extends Step("Socials")
-    case Experience extends Step("Experiences")
-    case Skill extends Step("Skills")
-    case Certification extends Step("Certifications")
-    case Review extends Step("Review")
 
   @cask.get("/wizard/detail")
   def getWizardName() =
