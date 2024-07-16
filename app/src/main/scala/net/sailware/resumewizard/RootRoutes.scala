@@ -5,7 +5,7 @@ import scalatags.Text.tags2.nav
 import scalatags.Text.tags2.section
 import scalatags.Text.tags2.title
 import io.undertow.server.handlers.form.FormParserFactory
-import org.jooq.DSLContext
+import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.*
 import net.sailware.resumewizard.jooq.tables.records.*
 
@@ -13,7 +13,8 @@ import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.jdk.OptionConverters.RichOptional
 
 
-case class RootRoutes(dslContext: DSLContext)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
+case class RootRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
+  val dslContext = databaseResource.ctx
   enum Step(val label: String):
     case Detail extends Step("Name & Title")
     case Contact extends Step("Contacts")
