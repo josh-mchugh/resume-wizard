@@ -3,6 +3,8 @@ package net.sailware.resumewizard
 import net.sailware.resumewizard.config.ConfigServiceImpl
 import net.sailware.resumewizard.database.DatabaseResourceImpl
 import net.sailware.resumewizard.database.FlywayServiceImpl
+import net.sailware.resumewizard.resume.wizard.ResumeDetailsRoutes
+import net.sailware.resumewizard.static.StaticRoutes
 
 object Application extends cask.Main:
 
@@ -15,6 +17,7 @@ object Application extends cask.Main:
 
   val allRoutes = Seq(
     StaticRoutes(),
+    ResumeDetailsRoutes(databaseResource),
     RootRoutes(databaseResource)
   )
   

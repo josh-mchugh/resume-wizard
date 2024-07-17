@@ -17,31 +17,6 @@ import scala.jdk.OptionConverters.RichOptional
 case class RootRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
   val dslContext = databaseResource.ctx
 
-  @cask.get("/wizard/detail")
-  def getWizardName() =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val result = dslContext.fetchOne(RESUME_DETAILS)
-      val form = buildForm(Step.Detail, buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary()))
-      buildPage(buildSteps(Step.Detail), form)
-    else
-      val form = buildForm(Step.Detail, buildNameAndTitleForm("", "", ""))
-      buildPage(buildSteps(Step.Detail), form) 
-
-  @cask.postForm("/wizard/detail")
-  def postWizardName(name: String, title: String, summary: String) =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_DETAILS).fetchOne()
-      dslContext.update(RESUME_DETAILS)
-        .set(RESUME_DETAILS.NAME, name)
-        .set(RESUME_DETAILS.TITLE, title)
-        .set(RESUME_DETAILS.SUMMARY, summary)
-        .execute()
-    else
-      dslContext.insertInto(RESUME_DETAILS, RESUME_DETAILS.NAME, RESUME_DETAILS.TITLE, RESUME_DETAILS.SUMMARY)
-        .values(name, title, summary)
-        .execute()
-    cask.Redirect("/wizard/contact")
-
   @cask.get("/wizard/contact")
   def getWizardContact() =
     if dslContext.fetchCount(RESUME_DETAILS) > 0 then
