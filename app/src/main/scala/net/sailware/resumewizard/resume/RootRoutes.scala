@@ -17,31 +17,6 @@ import scala.jdk.OptionConverters.RichOptional
 case class RootRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
   val dslContext = databaseResource.ctx
 
-  @cask.get("/wizard/contact")
-  def getWizardContact() =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val result = dslContext.fetchOne(RESUME_DETAILS)
-      val form = buildForm(Step.Contact, buildContactsForm(result.getPhone(), result.getEmail(), result.getLocation()))
-      buildPage(buildSteps(Step.Contact), form)
-    else
-      val form = buildForm(Step.Contact, buildContactsForm("", "", ""))
-      buildPage(buildSteps(Step.Contact), form) 
-
-  @cask.postForm("/wizard/contact")
-  def postWizardContact(phone: String, email: String, location: String) =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_DETAILS).fetchOne()
-      dslContext.update(RESUME_DETAILS)
-        .set(RESUME_DETAILS.PHONE, phone)
-        .set(RESUME_DETAILS.EMAIL, email)
-        .set(RESUME_DETAILS.LOCATION, location)
-        .execute()
-    else
-      dslContext.insertInto(RESUME_DETAILS, RESUME_DETAILS.PHONE, RESUME_DETAILS.EMAIL, RESUME_DETAILS.LOCATION)
-        .values(phone, email, location)
-        .execute()
-    cask.Redirect("/wizard/social")
-
   @cask.get("/wizard/social")
   def getWizardSocial() =
     if dslContext.fetchCount(RESUME_SOCIALS) > 0 then
@@ -249,38 +224,6 @@ case class RootRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Co
           formInputs,
         ),
         buildActions(step)
-      )
-    )
-
-  def buildNameAndTitleForm(resumeName: String, title: String, summary: String) =
-    List(
-      div()(
-        label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name", value := resumeName)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title", value := title)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Summary"),
-        textarea(cls := "form-control", rows := 3, name := "summary",  placeholder := "Summary of your current or previous role")(summary)
-      )
-    )
-
-  def buildContactsForm(phone: String, email: String, location: String) =
-    List(
-      div()(
-        label(cls := "form-label")("Phone Number"),
-        input(cls := "form-control", `type` := "text", name := "phone", placeholder := "Phone Number", value := phone)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Email Address"),
-        input(cls := "form-control", `type` := "text", name := "email", placeholder := "Email Address", value := email)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location", value := location)
       )
     )
 
