@@ -1,10 +1,10 @@
 package net.sailware.resumewizard.resume.wizard
 
-import scalatags.Text.all.*
 import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_DETAILS
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
+import scalatags.Text.all.*
 
 case class ResumeDetailsRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
