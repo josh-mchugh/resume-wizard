@@ -7,6 +7,7 @@ import net.sailware.resumewizard.resume.wizard.ResumeCertificationRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeContactRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeDetailsRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeExperienceRoutes
+import net.sailware.resumewizard.resume.wizard.ResumeReviewRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeSkillRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeSocialRoutes
 import net.sailware.resumewizard.static.StaticRoutes
@@ -26,9 +27,9 @@ object Application extends cask.Main:
     ResumeContactRoutes(databaseResource),
     ResumeDetailsRoutes(databaseResource),
     ResumeExperienceRoutes(databaseResource),
+    ResumeReviewRoutes(databaseResource),
     ResumeSkillRoutes(databaseResource),
     ResumeSocialRoutes(databaseResource),
-    RootRoutes(databaseResource)
   )
   
 
