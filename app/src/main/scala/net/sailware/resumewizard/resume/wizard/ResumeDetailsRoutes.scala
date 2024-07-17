@@ -1,9 +1,6 @@
 package net.sailware.resumewizard.resume.wizard
 
 import scalatags.Text.all.*
-import scalatags.Text.tags2.nav
-import scalatags.Text.tags2.section
-import scalatags.Text.tags2.title
 import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_DETAILS
 import net.sailware.resumewizard.resume.ResumePageView
