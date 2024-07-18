@@ -3,6 +3,7 @@ package net.sailware.resumewizard
 import net.sailware.resumewizard.config.ConfigServiceImpl
 import net.sailware.resumewizard.database.DatabaseResourceImpl
 import net.sailware.resumewizard.database.FlywayServiceImpl
+import net.sailware.resumewizard.resume.ResumeDetailsRepositoryImpl
 import net.sailware.resumewizard.resume.wizard.ResumeCertificationRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeContactRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeDetailsRoutes
@@ -25,7 +26,7 @@ object Application extends cask.Main:
     StaticRoutes(),
     ResumeCertificationRoutes(databaseResource),
     ResumeContactRoutes(databaseResource),
-    ResumeDetailsRoutes(databaseResource),
+    ResumeDetailsRoutes(ResumeDetailsRepositoryImpl(databaseResource)),
     ResumeExperienceRoutes(databaseResource),
     ResumeReviewRoutes(databaseResource),
     ResumeSkillRoutes(databaseResource),

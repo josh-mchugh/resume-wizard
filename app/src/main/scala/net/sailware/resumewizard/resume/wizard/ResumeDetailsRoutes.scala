@@ -1,20 +1,20 @@
 package net.sailware.resumewizard.resume.wizard
 
-import net.sailware.resumewizard.database.DatabaseResource
-import net.sailware.resumewizard.jooq.Tables.RESUME_DETAILS
+import net.sailware.resumewizard.resume.ResumeDetailsRepository
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
 
-case class ResumeDetailsRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-
-  val dslContext = databaseResource.ctx
+case class ResumeDetailsRoutes(resumeDetailsService: ResumeDetailsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/detail")
   def getWizardName() =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val result = dslContext.fetchOne(RESUME_DETAILS)
-      val form = ResumePageView.buildForm(Step.Detail, buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary()))
+    if resumeDetailsService.fetchCount() > 0 then
+      val result = resumeDetailsService.fetchOne()
+      val form = ResumePageView.buildForm(
+        Step.Detail,
+        buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary())
+      )
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Detail), form)
     else
       val form = ResumePageView.buildForm(Step.Detail, buildNameAndTitleForm("", "", ""))
@@ -22,17 +22,11 @@ case class ResumeDetailsRoutes(databaseResource: DatabaseResource)(implicit cc: 
 
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_DETAILS).fetchOne()
-      dslContext.update(RESUME_DETAILS)
-        .set(RESUME_DETAILS.NAME, name)
-        .set(RESUME_DETAILS.TITLE, title)
-        .set(RESUME_DETAILS.SUMMARY, summary)
-        .execute()
+    if resumeDetailsService.fetchCount() > 0 then
+      val resumeDetail = resumeDetailsService.fetchOne()
+      resumeDetailsService.update(name, title, summary)
     else
-      dslContext.insertInto(RESUME_DETAILS, RESUME_DETAILS.NAME, RESUME_DETAILS.TITLE, RESUME_DETAILS.SUMMARY)
-        .values(name, title, summary)
-        .execute()
+      resumeDetailsService.insert(name, title, summary)
     cask.Redirect("/wizard/contact")
 
   def buildNameAndTitleForm(resumeName: String, title: String, summary: String) =
