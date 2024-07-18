@@ -1,19 +1,20 @@
 package net.sailware.resumewizard.resume.wizard
 
-import net.sailware.resumewizard.database.DatabaseResource
-import net.sailware.resumewizard.jooq.Tables.RESUME_DETAILS
+import net.sailware.resumewizard.resume.ResumeContactRepository
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
 
-case class ResumeContactRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-  val dslContext = databaseResource.ctx
+case class ResumeContactRoutes(repository: ResumeContactRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/contact")
   def getWizardContact() =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val result = dslContext.fetchOne(RESUME_DETAILS)
-      val form = ResumePageView.buildForm(Step.Contact, buildContactsForm(result.getPhone(), result.getEmail(), result.getLocation()))
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
+      val form = ResumePageView.buildForm(
+        Step.Contact,
+        buildContactsForm(result.getPhone(), result.getEmail(), result.getLocation())
+      )
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Contact), form)
     else
       val form = ResumePageView.buildForm(Step.Contact, buildContactsForm("", "", ""))
@@ -21,17 +22,11 @@ case class ResumeContactRoutes(databaseResource: DatabaseResource)(implicit cc: 
 
   @cask.postForm("/wizard/contact")
   def postWizardContact(phone: String, email: String, location: String) =
-    if dslContext.fetchCount(RESUME_DETAILS) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_DETAILS).fetchOne()
-      dslContext.update(RESUME_DETAILS)
-        .set(RESUME_DETAILS.PHONE, phone)
-        .set(RESUME_DETAILS.EMAIL, email)
-        .set(RESUME_DETAILS.LOCATION, location)
-        .execute()
+    if repository.fetchCount() > 0 then
+      val resumeDetail = repository.fetchOne()
+      repository.update(phone, email, location)
     else
-      dslContext.insertInto(RESUME_DETAILS, RESUME_DETAILS.PHONE, RESUME_DETAILS.EMAIL, RESUME_DETAILS.LOCATION)
-        .values(phone, email, location)
-        .execute()
+      repository.insert(phone, email, location)
     cask.Redirect("/wizard/social")
 
   def buildContactsForm(phone: String, email: String, location: String) =

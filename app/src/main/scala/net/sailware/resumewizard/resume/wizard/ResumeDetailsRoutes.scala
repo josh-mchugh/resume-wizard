@@ -5,12 +5,12 @@ import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
 
-case class ResumeDetailsRoutes(resumeDetailsService: ResumeDetailsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
+case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/detail")
   def getWizardName() =
-    if resumeDetailsService.fetchCount() > 0 then
-      val result = resumeDetailsService.fetchOne()
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
       val form = ResumePageView.buildForm(
         Step.Detail,
         buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary())
@@ -22,11 +22,11 @@ case class ResumeDetailsRoutes(resumeDetailsService: ResumeDetailsRepository)(im
 
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
-    if resumeDetailsService.fetchCount() > 0 then
-      val resumeDetail = resumeDetailsService.fetchOne()
-      resumeDetailsService.update(name, title, summary)
+    if repository.fetchCount() > 0 then
+      val resumeDetail = repository.fetchOne()
+      repository.update(name, title, summary)
     else
-      resumeDetailsService.insert(name, title, summary)
+      repository.insert(name, title, summary)
     cask.Redirect("/wizard/contact")
 
   def buildNameAndTitleForm(resumeName: String, title: String, summary: String) =

@@ -3,6 +3,7 @@ package net.sailware.resumewizard
 import net.sailware.resumewizard.config.ConfigServiceImpl
 import net.sailware.resumewizard.database.DatabaseResourceImpl
 import net.sailware.resumewizard.database.FlywayServiceImpl
+import net.sailware.resumewizard.resume.ResumeContactRepositoryImpl
 import net.sailware.resumewizard.resume.ResumeDetailsRepositoryImpl
 import net.sailware.resumewizard.resume.wizard.ResumeCertificationRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeContactRoutes
@@ -25,7 +26,7 @@ object Application extends cask.Main:
   val allRoutes = Seq(
     StaticRoutes(),
     ResumeCertificationRoutes(databaseResource),
-    ResumeContactRoutes(databaseResource),
+    ResumeContactRoutes(ResumeContactRepositoryImpl(databaseResource)),
     ResumeDetailsRoutes(ResumeDetailsRepositoryImpl(databaseResource)),
     ResumeExperienceRoutes(databaseResource),
     ResumeReviewRoutes(databaseResource),
