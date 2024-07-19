@@ -1,18 +1,16 @@
 package net.sailware.resumewizard.resume.wizard
 
-import net.sailware.resumewizard.database.DatabaseResource
-import net.sailware.resumewizard.jooq.Tables.RESUME_SKILLS
+import net.sailware.resumewizard.resume.ResumeSkillsRepository
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
 
-case class ResumeSkillRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-  val dslContext = databaseResource.ctx
+case class ResumeSkillRoutes(repository: ResumeSkillsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/skill")
   def getWizardSkill() =
-    if dslContext.fetchCount(RESUME_SKILLS) > 0 then
-      val result = dslContext.fetchOne(RESUME_SKILLS)
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
       val form = ResumePageView.buildForm(Step.Skill, buildSkillForm(result.getName(), result.getRating()))
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Skill), form)
     else
@@ -21,16 +19,11 @@ case class ResumeSkillRoutes(databaseResource: DatabaseResource)(implicit cc: ca
 
   @cask.postForm("/wizard/skill")
   def postWizardSkill(name: String, rating: Short) =
-    if dslContext.fetchCount(RESUME_SKILLS) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_SKILLS).fetchOne()
-      dslContext.update(RESUME_SKILLS)
-        .set(RESUME_SKILLS.NAME, name)
-        .set(RESUME_SKILLS.RATING, rating)
-        .execute()
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
+      repository.update(result.getId(), name, rating)
     else
-      dslContext.insertInto(RESUME_SKILLS, RESUME_SKILLS.NAME, RESUME_SKILLS.RATING)
-        .values(name, rating)
-        .execute()
+      repository.insert(name, rating)
     cask.Redirect("/wizard/certification")
 
   def buildSkillForm(skillName: String, rating: Short) =

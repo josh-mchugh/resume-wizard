@@ -6,6 +6,7 @@ import net.sailware.resumewizard.database.FlywayServiceImpl
 import net.sailware.resumewizard.resume.ResumeContactRepositoryImpl
 import net.sailware.resumewizard.resume.ResumeExperiencesRepositoryImpl
 import net.sailware.resumewizard.resume.ResumeDetailsRepositoryImpl
+import net.sailware.resumewizard.resume.ResumeSkillsRepositoryImpl
 import net.sailware.resumewizard.resume.ResumeSocialsRepositoryImpl
 import net.sailware.resumewizard.resume.wizard.ResumeCertificationRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeContactRoutes
@@ -32,18 +33,7 @@ object Application extends cask.Main:
     ResumeDetailsRoutes(ResumeDetailsRepositoryImpl(databaseResource)),
     ResumeExperienceRoutes(ResumeExperiencesRepositoryImpl(databaseResource)),
     ResumeReviewRoutes(databaseResource),
-    ResumeSkillRoutes(databaseResource),
+    ResumeSkillRoutes(ResumeSkillsRepositoryImpl(databaseResource)),
     ResumeSocialRoutes(ResumeSocialsRepositoryImpl(databaseResource)),
   )
   
-
-
-
-
-
-
-
-
-
-
-
