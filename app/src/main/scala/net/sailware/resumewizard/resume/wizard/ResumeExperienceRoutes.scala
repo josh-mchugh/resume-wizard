@@ -1,19 +1,26 @@
 package net.sailware.resumewizard.resume.wizard
 
-import net.sailware.resumewizard.database.DatabaseResource
-import net.sailware.resumewizard.jooq.Tables.RESUME_EXPERIENCES
+import net.sailware.resumewizard.resume.ResumeExperiencesRepository
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
 
-case class ResumeExperienceRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-  val dslContext = databaseResource.ctx
+case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/experience")
   def getWizardExperience() =
-    if dslContext.fetchCount(RESUME_EXPERIENCES) > 0 then
-      val result = dslContext.fetchOne(RESUME_EXPERIENCES)
-      val form = ResumePageView.buildForm(Step.Experience, buildExperienceForm(result.getTitle(), result.getOrganization(), result.getDuration(), result.getLocation(), result.getDescription(), result.getSkills()))
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
+      val form = ResumePageView.buildForm(
+        Step.Experience,
+        buildExperienceForm(
+          result.getTitle(),
+          result.getOrganization(),
+          result.getDuration(),
+          result.getLocation(),
+          result.getDescription(),
+          result.getSkills())
+      )
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Experience), form)
     else
       val form = ResumePageView.buildForm(Step.Experience, buildExperienceForm("", "", "", "", "", ""))
@@ -21,20 +28,11 @@ case class ResumeExperienceRoutes(databaseResource: DatabaseResource)(implicit c
 
   @cask.postForm("/wizard/experience")
   def postWizardExperience(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
-    if dslContext.fetchCount(RESUME_EXPERIENCES) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_EXPERIENCES).fetchOne()
-      dslContext.update(RESUME_EXPERIENCES)
-        .set(RESUME_EXPERIENCES.TITLE, title)
-        .set(RESUME_EXPERIENCES.ORGANIZATION, organization)
-        .set(RESUME_EXPERIENCES.DURATION, duration)
-        .set(RESUME_EXPERIENCES.LOCATION, location)
-        .set(RESUME_EXPERIENCES.DESCRIPTION, description)
-        .set(RESUME_EXPERIENCES.SKILLS, skills)
-        .execute()
+    if repository.fetchCount() > 0 then
+      val resumeDetail = repository.fetchOne()
+      repository.update(title, organization, duration, location, description, skills)
     else
-      dslContext.insertInto(RESUME_EXPERIENCES, RESUME_EXPERIENCES.TITLE, RESUME_EXPERIENCES.ORGANIZATION, RESUME_EXPERIENCES.DURATION, RESUME_EXPERIENCES.LOCATION, RESUME_EXPERIENCES.DESCRIPTION, RESUME_EXPERIENCES.SKILLS)
-        .values(title, organization, duration, location, description, skills)
-        .execute()
+      repository.insert(title, organization, duration, location, description, skills)
     cask.Redirect("/wizard/skill")
 
   def buildExperienceForm(title: String, organization: String, duration: String, location: String, description: String, skills: String) =
