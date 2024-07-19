@@ -1,21 +1,19 @@
 package net.sailware.resumewizard.resume.wizard
 
 import io.undertow.server.handlers.form.FormParserFactory
-import net.sailware.resumewizard.database.DatabaseResource
-import net.sailware.resumewizard.jooq.Tables.RESUME_SOCIALS
+import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
-case class ResumeSocialRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-  val dslContext = databaseResource.ctx
+case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/social")
   def getWizardSocial() =
-    if dslContext.fetchCount(RESUME_SOCIALS) > 0 then
-      val result = dslContext.fetchOne(RESUME_SOCIALS)
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
       val form = ResumePageView.buildForm(Step.Social, buildSocialsForm(result.getName(), result.getUrl()))
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Social), form)
     else
@@ -43,16 +41,11 @@ case class ResumeSocialRoutes(databaseResource: DatabaseResource)(implicit cc: c
               case _ => data
         case _ => data
 
-    if dslContext.fetchCount(RESUME_SOCIALS) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_SOCIALS).fetchOne()
-      dslContext.update(RESUME_SOCIALS)
-        .set(RESUME_SOCIALS.NAME, data("0").name)
-        .set(RESUME_SOCIALS.URL, data("0").url)
-        .execute()
+    if repository.fetchCount() > 0 then
+      val resumeDetail = repository.fetchOne()
+      repository.update(data("0").name, data("0").url)
     else
-      dslContext.insertInto(RESUME_SOCIALS, RESUME_SOCIALS.NAME, RESUME_SOCIALS.URL)
-        .values(data("0").name, data("0").url)
-        .execute()
+      repository.insert(data("0").name, data("0").url)
  
     cask.Redirect("/wizard/experience")
 
