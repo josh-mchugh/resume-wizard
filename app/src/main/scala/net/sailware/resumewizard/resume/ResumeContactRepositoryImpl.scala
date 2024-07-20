@@ -22,9 +22,10 @@ class ResumeContactRepositoryImpl(databaseResource: DatabaseResource) extends Re
       .values(phone, email, location)
       .execute()
 
-  override def update(phone: String, email: String, location: String): Unit =
+  override def update(id: Int, phone: String, email: String, location: String): Unit =
     databaseResource.ctx.update(RESUME_DETAILS)
-        .set(RESUME_DETAILS.PHONE, phone)
-        .set(RESUME_DETAILS.EMAIL, email)
-        .set(RESUME_DETAILS.LOCATION, location)
-        .execute()
+      .set(RESUME_DETAILS.PHONE, phone)
+      .set(RESUME_DETAILS.EMAIL, email)
+      .set(RESUME_DETAILS.LOCATION, location)
+      .where(RESUME_DETAILS.ID.eq(id))
+      .execute()
