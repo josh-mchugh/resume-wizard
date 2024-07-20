@@ -22,9 +22,10 @@ class ResumeDetailsRepositoryImpl(databaseResource: DatabaseResource) extends Re
       .values(name, title, summary)
       .execute()
 
-  override def update(name: String, title: String, summary: String): Unit =
+  override def update(id: Int, name: String, title: String, summary: String): Unit =
     databaseResource.ctx.update(RESUME_DETAILS)
       .set(RESUME_DETAILS.NAME, name)
       .set(RESUME_DETAILS.TITLE, title)
       .set(RESUME_DETAILS.SUMMARY, summary)
+      .where(RESUME_DETAILS.ID.eq(id))
       .execute()

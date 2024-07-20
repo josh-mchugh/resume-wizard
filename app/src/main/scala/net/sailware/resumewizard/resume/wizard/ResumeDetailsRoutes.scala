@@ -23,8 +23,8 @@ case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc:
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String) =
     if repository.fetchCount() > 0 then
-      val resumeDetail = repository.fetchOne()
-      repository.update(name, title, summary)
+      val result = repository.fetchOne()
+      repository.update(result.getId(), name, title, summary)
     else
       repository.insert(name, title, summary)
     cask.Redirect("/wizard/contact")

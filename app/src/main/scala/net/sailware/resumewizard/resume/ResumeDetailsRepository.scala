@@ -9,4 +9,4 @@ trait ResumeDetailsRepository:
   def fetchOne(): ResumeDetailsRecord
   def fetchCount(): Long
   def insert(name: String, title: String, summary: String): Unit
-  def update(name: String, title: String, summary: String): Unit
+  def update(id: Int, name: String, title: String, summary: String): Unit
