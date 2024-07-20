@@ -1,18 +1,16 @@
 package net.sailware.resumewizard.resume.wizard
 
-import net.sailware.resumewizard.database.DatabaseResource
-import net.sailware.resumewizard.jooq.Tables.RESUME_CERTIFICATIONS
+import net.sailware.resumewizard.resume.ResumeCertificationsRepository
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
 
-case class ResumeCertificationRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-  val dslContext = databaseResource.ctx
+case class ResumeCertificationRoutes(repository: ResumeCertificationsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/certification")
   def getWizardCertification() =
-    if dslContext.fetchCount(RESUME_CERTIFICATIONS) > 0 then
-      val result = dslContext.fetchOne(RESUME_CERTIFICATIONS)
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
       val form = ResumePageView.buildForm(Step.Certification, buildCertificationForm(result.getTitle(), result.getOrganization(), result.getYear(), result.getLocation()))
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Certification), form)
     else
@@ -21,18 +19,11 @@ case class ResumeCertificationRoutes(databaseResource: DatabaseResource)(implici
 
   @cask.postForm("/wizard/certification")
   def postWizardCertification(title: String, organization: String, year: String, location: String) =
-    if dslContext.fetchCount(RESUME_CERTIFICATIONS) > 0 then
-      val resumeDetail = dslContext.selectFrom(RESUME_CERTIFICATIONS).fetchOne()
-      dslContext.update(RESUME_CERTIFICATIONS)
-        .set(RESUME_CERTIFICATIONS.TITLE, title)
-        .set(RESUME_CERTIFICATIONS.ORGANIZATION, organization)
-        .set(RESUME_CERTIFICATIONS.YEAR, year)
-        .set(RESUME_CERTIFICATIONS.LOCATION, location)
-        .execute()
+    if repository.fetchCount() > 0 then
+      val result = repository.fetchOne()
+      repository.update(result.getId(), title, organization, year, location)
     else
-      dslContext.insertInto(RESUME_CERTIFICATIONS, RESUME_CERTIFICATIONS.TITLE, RESUME_CERTIFICATIONS.ORGANIZATION, RESUME_CERTIFICATIONS.YEAR, RESUME_CERTIFICATIONS.LOCATION)
-        .values(title, organization, year, location)
-        .execute()
+      repository.insert(title, organization, year, location)
     cask.Redirect("/wizard/review")
 
   def buildCertificationForm(title: String, organization: String, year: String, location: String) =
