@@ -21,8 +21,9 @@ class ResumeSocialsRepositoryImpl(databaseResource: DatabaseResource) extends Re
       .values(name, url)
       .execute()
 
-  override def update(name: String, url: String): Unit =
+  override def update(id: Int, name: String, url: String): Unit =
     databaseResource.ctx.update(RESUME_SOCIALS)
-        .set(RESUME_SOCIALS.NAME, name)
-        .set(RESUME_SOCIALS.URL, url)
-        .execute()
+      .set(RESUME_SOCIALS.NAME, name)
+      .set(RESUME_SOCIALS.URL, url)
+      .where(RESUME_SOCIALS.ID.eq(id))
+      .execute()

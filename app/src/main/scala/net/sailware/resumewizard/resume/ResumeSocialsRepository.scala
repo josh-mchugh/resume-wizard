@@ -9,4 +9,4 @@ trait ResumeSocialsRepository:
   def fetchCount(): Long
   def fetchOne(): ResumeSocialsRecord
   def insert(name: String, url: String): Unit
-  def update(name: String, url: String): Unit
+  def update(id: Int, name: String, url: String): Unit

@@ -42,8 +42,8 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
         case _ => data
 
     if repository.fetchCount() > 0 then
-      val resumeDetail = repository.fetchOne()
-      repository.update(data("0").name, data("0").url)
+      val result = repository.fetchOne()
+      repository.update(result.getId(), data("0").name, data("0").url)
     else
       repository.insert(data("0").name, data("0").url)
  
