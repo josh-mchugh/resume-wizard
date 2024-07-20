@@ -27,14 +27,28 @@ object Application extends cask.Main:
 
   val databaseResource = DatabaseResourceImpl(configService)
 
+  val certificationsRepository = ResumeCertificationsRepositoryImpl(databaseResource)
+  val contactsRepository = ResumeContactRepositoryImpl(databaseResource)
+  val detailsRepository = ResumeDetailsRepositoryImpl(databaseResource)
+  val experiencesRepository = ResumeExperiencesRepositoryImpl(databaseResource)
+  val skillsRepository = ResumeSkillsRepositoryImpl(databaseResource)
+  val socialsRepository = ResumeSocialsRepositoryImpl(databaseResource) 
+
   val allRoutes = Seq(
     StaticRoutes(),
-    ResumeCertificationRoutes(ResumeCertificationsRepositoryImpl(databaseResource)),
-    ResumeContactRoutes(ResumeContactRepositoryImpl(databaseResource)),
-    ResumeDetailsRoutes(ResumeDetailsRepositoryImpl(databaseResource)),
-    ResumeExperienceRoutes(ResumeExperiencesRepositoryImpl(databaseResource)),
-    ResumeReviewRoutes(databaseResource),
-    ResumeSkillRoutes(ResumeSkillsRepositoryImpl(databaseResource)),
-    ResumeSocialRoutes(ResumeSocialsRepositoryImpl(databaseResource)),
+    ResumeCertificationRoutes(certificationsRepository),
+    ResumeContactRoutes(contactsRepository),
+    ResumeDetailsRoutes(detailsRepository),
+    ResumeExperienceRoutes(experiencesRepository),
+    ResumeReviewRoutes(
+      certificationsRepository,
+      contactsRepository,
+      detailsRepository,
+      experiencesRepository,
+      skillsRepository,
+      socialsRepository
+    ),
+    ResumeSkillRoutes(skillsRepository),
+    ResumeSocialRoutes(socialsRepository),
   )
   

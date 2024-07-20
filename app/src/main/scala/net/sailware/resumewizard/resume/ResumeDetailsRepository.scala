@@ -6,7 +6,8 @@ import net.sailware.resumewizard.jooq.tables.records.ResumeDetailsRecord
 
 trait ResumeDetailsRepository:
 
-  def fetchOne(): ResumeDetailsRecord
   def fetchCount(): Long
+  def fetchOne(): ResumeDetailsRecord
+  def fetchOption(): Option[ResumeDetailsRecord]
   def insert(name: String, title: String, summary: String): Unit
   def update(id: Int, name: String, title: String, summary: String): Unit

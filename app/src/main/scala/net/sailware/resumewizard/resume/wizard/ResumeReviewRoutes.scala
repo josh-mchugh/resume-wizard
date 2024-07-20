@@ -1,35 +1,36 @@
 package net.sailware.resumewizard.resume.wizard
 
-import net.sailware.resumewizard.database.DatabaseResource
-import net.sailware.resumewizard.jooq.Tables.{
-  RESUME_CERTIFICATIONS,
-  RESUME_DETAILS,
-  RESUME_EXPERIENCES,
-  RESUME_SKILLS,
-  RESUME_SOCIALS
-}
-import net.sailware.resumewizard.jooq.tables.records.{
-  ResumeCertificationsRecord,
-  ResumeDetailsRecord,
-  ResumeExperiencesRecord,
-  ResumeSkillsRecord,
-  ResumeSocialsRecord
-}
+import net.sailware.resumewizard.resume.ResumeCertificationsRepository
+import net.sailware.resumewizard.resume.ResumeDetailsRepository
+import net.sailware.resumewizard.resume.ResumeContactRepository
+import net.sailware.resumewizard.resume.ResumeExperiencesRepository
+import net.sailware.resumewizard.resume.ResumeSkillsRepository
+import net.sailware.resumewizard.resume.ResumeSocialsRepository
+import net.sailware.resumewizard.jooq.tables.records.ResumeCertificationsRecord
+import net.sailware.resumewizard.jooq.tables.records.ResumeDetailsRecord
+import net.sailware.resumewizard.jooq.tables.records.ResumeExperiencesRecord
+import net.sailware.resumewizard.jooq.tables.records.ResumeSkillsRecord
+import net.sailware.resumewizard.jooq.tables.records.ResumeSocialsRecord
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
-import scala.jdk.OptionConverters.RichOptional
 import scalatags.Text.all.*
 
-case class ResumeReviewRoutes(databaseResource: DatabaseResource)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
-  val dslContext = databaseResource.ctx
+case class ResumeReviewRoutes(
+  certificationsRepository: ResumeCertificationsRepository,
+  contactsRepository: ResumeContactRepository,
+  detailsRepository: ResumeDetailsRepository,
+  experiencesRepository: ResumeExperiencesRepository,
+  skillsRepository: ResumeSkillsRepository,
+  socialsRepository: ResumeSocialsRepository,
+)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/review")
   def getWizardReview() =
-    val detailsOption = dslContext.fetchOptional(RESUME_DETAILS).toScala
-    val socialsOption = dslContext.fetchOptional(RESUME_SOCIALS).toScala
-    val experiencesOption = dslContext.fetchOptional(RESUME_EXPERIENCES).toScala
-    val skillsOption = dslContext.fetchOptional(RESUME_SKILLS).toScala
-    val certificationsOption = dslContext.fetchOptional(RESUME_CERTIFICATIONS).toScala
+    val detailsOption = detailsRepository.fetchOption()
+    val socialsOption = socialsRepository.fetchOption()
+    val experiencesOption = experiencesRepository.fetchOption()
+    val skillsOption = skillsRepository.fetchOption()
+    val certificationsOption = certificationsRepository.fetchOption()
     ResumePageView.buildPage(ResumePageView.buildSteps(Step.Review), buildReview(detailsOption, socialsOption, experiencesOption, skillsOption, certificationsOption))
 
   def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =

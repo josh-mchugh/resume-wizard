@@ -8,5 +8,6 @@ trait ResumeSocialsRepository:
 
   def fetchCount(): Long
   def fetchOne(): ResumeSocialsRecord
+  def fetchOption(): Option[ResumeSocialsRecord]
   def insert(name: String, url: String): Unit
   def update(id: Int, name: String, url: String): Unit

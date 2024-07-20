@@ -6,5 +6,6 @@ trait ResumeContactRepository:
 
   def fetchCount(): Long
   def fetchOne(): ResumeDetailsRecord
+  def fetchOption(): Option[ResumeDetailsRecord]
   def insert(phone: String, email: String, location: String): Unit
   def update(id: Int, phone: String, email: String, location: String): Unit

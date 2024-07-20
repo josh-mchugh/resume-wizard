@@ -3,6 +3,7 @@ package net.sailware.resumewizard.resume
 import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_EXPERIENCES
 import net.sailware.resumewizard.jooq.tables.records.ResumeExperiencesRecord
+import scala.jdk.OptionConverters.RichOptional
 
 class ResumeExperiencesRepositoryImpl(databaseResource: DatabaseResource) extends ResumeExperiencesRepository:
 
@@ -11,6 +12,9 @@ class ResumeExperiencesRepositoryImpl(databaseResource: DatabaseResource) extend
 
   override def fetchOne(): ResumeExperiencesRecord =
     databaseResource.ctx.fetchOne(RESUME_EXPERIENCES)
+
+  override def fetchOption(): Option[ResumeExperiencesRecord] =
+    databaseResource.ctx.fetchOptional(RESUME_EXPERIENCES).asScala
 
   override def insert(title: String, organization: String, duration: String, location: String, description: String, skills: String): Unit =
     databaseResource.ctx.insertInto(
