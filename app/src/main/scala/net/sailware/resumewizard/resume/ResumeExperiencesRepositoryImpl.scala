@@ -25,7 +25,7 @@ class ResumeExperiencesRepositoryImpl(databaseResource: DatabaseResource) extend
       .values(title, organization, duration, location, description, skills)
       .execute()
 
-  override def update(title: String, organization: String, duration: String, location: String, description: String, skills: String): Unit =
+  override def update(id: Int, title: String, organization: String, duration: String, location: String, description: String, skills: String): Unit =
     databaseResource.ctx.update(RESUME_EXPERIENCES)
       .set(RESUME_EXPERIENCES.TITLE, title)
       .set(RESUME_EXPERIENCES.ORGANIZATION, organization)
@@ -33,4 +33,5 @@ class ResumeExperiencesRepositoryImpl(databaseResource: DatabaseResource) extend
       .set(RESUME_EXPERIENCES.LOCATION, location)
       .set(RESUME_EXPERIENCES.DESCRIPTION, description)
       .set(RESUME_EXPERIENCES.SKILLS, skills)
+      .where(RESUME_EXPERIENCES.ID.eq(id))
       .execute()
