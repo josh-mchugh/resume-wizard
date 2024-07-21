@@ -9,5 +9,5 @@ trait ResumeDetailsRepository:
   def fetchCount(): Long
   def fetchOne(): ResumeDetailsRecord
   def fetchOption(): Option[ResumeDetailsRecord]
-  def insert(name: String, title: String, summary: String): Unit
-  def update(id: Int, name: String, title: String, summary: String): Unit
+  def insert(name: String, title: String, summary: String, phone: String, email: String, location: String): Unit
+  def update(id: Int, name: String, title: String, summary: String, phone: String, email: String, location: String): Unit

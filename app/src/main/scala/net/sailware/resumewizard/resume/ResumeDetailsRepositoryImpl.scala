@@ -16,20 +16,26 @@ class ResumeDetailsRepositoryImpl(databaseResource: DatabaseResource) extends Re
   override def fetchOption(): Option[ResumeDetailsRecord] =
     databaseResource.ctx.fetchOptional(RESUME_DETAILS).asScala
 
-  override def insert(name: String, title: String, summary: String): Unit =
+  override def insert(name: String, title: String, summary: String, phone: String, email: String, location: String): Unit =
     databaseResource.ctx.insertInto(
       RESUME_DETAILS,
       RESUME_DETAILS.NAME,
       RESUME_DETAILS.TITLE,
-      RESUME_DETAILS.SUMMARY
+      RESUME_DETAILS.SUMMARY,
+      RESUME_DETAILS.PHONE,
+      RESUME_DETAILS.EMAIL,
+      RESUME_DETAILS.LOCATION
     )
-      .values(name, title, summary)
+      .values(name, title, summary, phone, email, location)
       .execute()
 
-  override def update(id: Int, name: String, title: String, summary: String): Unit =
+  override def update(id: Int, name: String, title: String, summary: String, phone: String, email: String, location: String): Unit =
     databaseResource.ctx.update(RESUME_DETAILS)
       .set(RESUME_DETAILS.NAME, name)
       .set(RESUME_DETAILS.TITLE, title)
       .set(RESUME_DETAILS.SUMMARY, summary)
+      .set(RESUME_DETAILS.PHONE, phone)
+      .set(RESUME_DETAILS.EMAIL, email)
+      .set(RESUME_DETAILS.LOCATION, location)
       .where(RESUME_DETAILS.ID.eq(id))
       .execute()

@@ -2,7 +2,6 @@ package net.sailware.resumewizard.resume.wizard
 
 import net.sailware.resumewizard.resume.ResumeCertificationsRepository
 import net.sailware.resumewizard.resume.ResumeDetailsRepository
-import net.sailware.resumewizard.resume.ResumeContactRepository
 import net.sailware.resumewizard.resume.ResumeExperiencesRepository
 import net.sailware.resumewizard.resume.ResumeSkillsRepository
 import net.sailware.resumewizard.resume.ResumeSocialsRepository
@@ -17,7 +16,6 @@ import scalatags.Text.all.*
 
 case class ResumeReviewRoutes(
   certificationsRepository: ResumeCertificationsRepository,
-  contactsRepository: ResumeContactRepository,
   detailsRepository: ResumeDetailsRepository,
   experiencesRepository: ResumeExperiencesRepository,
   skillsRepository: ResumeSkillsRepository,

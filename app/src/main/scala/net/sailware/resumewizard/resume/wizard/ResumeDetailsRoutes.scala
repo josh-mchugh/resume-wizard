@@ -13,23 +13,23 @@ case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc:
       val result = repository.fetchOne()
       val form = ResumePageView.buildForm(
         Step.Detail,
-        buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary())
+        buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary(), result.getPhone(), result.getEmail(), result.getLocation())
       )
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Detail), form)
     else
-      val form = ResumePageView.buildForm(Step.Detail, buildNameAndTitleForm("", "", ""))
+      val form = ResumePageView.buildForm(Step.Detail, buildNameAndTitleForm("", "", "", "", "", ""))
       ResumePageView.buildPage(ResumePageView.buildSteps(Step.Detail), form) 
 
   @cask.postForm("/wizard/detail")
-  def postWizardName(name: String, title: String, summary: String) =
+  def postWizardName(name: String, title: String, summary: String, phone: String, email: String, location: String) =
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      repository.update(result.getId(), name, title, summary)
+      repository.update(result.getId(), name, title, summary, phone, email, location)
     else
-      repository.insert(name, title, summary)
-    cask.Redirect("/wizard/contact")
+      repository.insert(name, title, summary, phone, email, location)
+    cask.Redirect("/wizard/social")
 
-  def buildNameAndTitleForm(resumeName: String, title: String, summary: String) =
+  def buildNameAndTitleForm(resumeName: String, title: String, summary: String, phone: String, email: String, location: String) =
     List(
       div()(
         label(cls := "form-label")("Name"),
@@ -42,6 +42,18 @@ case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc:
       div(cls := "mt-3")(
         label(cls := "form-label")("Summary"),
         textarea(cls := "form-control", rows := 3, name := "summary",  placeholder := "Summary of your current or previous role")(summary)
+      ),
+      div()(
+        label(cls := "form-label")("Phone Number"),
+        input(cls := "form-control", `type` := "text", name := "phone", placeholder := "Phone Number", value := phone)
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Email Address"),
+        input(cls := "form-control", `type` := "text", name := "email", placeholder := "Email Address", value := email)
+      ),
+      div(cls := "mt-3")(
+        label(cls := "form-label")("Location"),
+        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location", value := location)
       )
     )
 
