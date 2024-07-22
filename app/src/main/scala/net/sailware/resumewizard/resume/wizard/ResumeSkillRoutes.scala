@@ -11,11 +11,11 @@ case class ResumeSkillRoutes(repository: ResumeSkillsRepository)(implicit cc: ca
   def getWizardSkill() =
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      val form = ResumePageView.buildForm(Step.Skill, buildSkillForm(result.getName(), result.getRating()))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Skill), form)
+      val formContent = buildSkillForm(result.getName(), result.getRating())
+      ResumePageView.view(Step.Skill, formContent)
     else
-      val form = ResumePageView.buildForm(Step.Skill, buildSkillForm("", 0))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Skill), form) 
+      val formContent = buildSkillForm("", 0)
+      ResumePageView.view(Step.Skill, formContent) 
 
   @cask.postForm("/wizard/skill")
   def postWizardSkill(name: String, rating: Short) =

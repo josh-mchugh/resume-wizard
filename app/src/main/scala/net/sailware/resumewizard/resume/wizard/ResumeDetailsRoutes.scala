@@ -11,14 +11,11 @@ case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc:
   def getWizardName() =
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      val form = ResumePageView.buildForm(
-        Step.Detail,
-        buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary(), result.getPhone(), result.getEmail(), result.getLocation())
-      )
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Detail), form)
+      val formContent = buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary(), result.getPhone(), result.getEmail(), result.getLocation())
+      ResumePageView.view(Step.Detail, formContent)
     else
-      val form = ResumePageView.buildForm(Step.Detail, buildNameAndTitleForm("", "", "", "", "", ""))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Detail), form) 
+      val formContent = buildNameAndTitleForm("", "", "", "", "", "")
+      ResumePageView.view(Step.Detail, formContent) 
 
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String, phone: String, email: String, location: String) =

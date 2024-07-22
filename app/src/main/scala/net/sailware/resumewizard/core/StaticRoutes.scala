@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.static
+package net.sailware.resumewizard.core
 
 case class StaticRoutes()(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 

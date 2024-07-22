@@ -29,7 +29,7 @@ case class ResumeReviewRoutes(
     val experiencesOption = experiencesRepository.fetchOption()
     val skillsOption = skillsRepository.fetchOption()
     val certificationsOption = certificationsRepository.fetchOption()
-    ResumePageView.buildPage(ResumePageView.buildSteps(Step.Review), buildReview(detailsOption, socialsOption, experiencesOption, skillsOption, certificationsOption))
+    ResumePageView.view(Step.Review, buildReview(detailsOption, socialsOption, experiencesOption, skillsOption, certificationsOption))
 
   def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
     val details = List(

@@ -11,20 +11,18 @@ case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(impli
   def getWizardExperience() =
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      val form = ResumePageView.buildForm(
-        Step.Experience,
-        buildExperienceForm(
+      val formContent = buildExperienceForm(
           result.getTitle(),
           result.getOrganization(),
           result.getDuration(),
           result.getLocation(),
           result.getDescription(),
-          result.getSkills())
+          result.getSkills()
       )
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Experience), form)
+      ResumePageView.view(Step.Experience, formContent)
     else
-      val form = ResumePageView.buildForm(Step.Experience, buildExperienceForm("", "", "", "", "", ""))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Experience), form) 
+      val formContent = buildExperienceForm("", "", "", "", "", "")
+      ResumePageView.view(Step.Experience, formContent) 
 
   @cask.postForm("/wizard/experience")
   def postWizardExperience(title: String, organization: String, duration: String, location: String, description: String, skills: String) =

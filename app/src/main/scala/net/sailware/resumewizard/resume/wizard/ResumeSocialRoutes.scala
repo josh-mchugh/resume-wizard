@@ -14,11 +14,11 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
   def getWizardSocial() =
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      val form = ResumePageView.buildForm(Step.Social, buildSocialsForm(result.getName(), result.getUrl()))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Social), form)
+      val formContent = buildSocialsForm(result.getName(), result.getUrl())
+      ResumePageView.view(Step.Social, formContent)
     else
-      val form = ResumePageView.buildForm(Step.Social, buildSocialsForm("", ""))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Social), form) 
+      val formContent = buildSocialsForm("", "")
+      ResumePageView.view(Step.Social, formContent) 
 
   case class SocialForm(val name: String, val url: String)
 

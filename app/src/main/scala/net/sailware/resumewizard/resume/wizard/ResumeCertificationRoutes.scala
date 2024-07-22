@@ -11,11 +11,11 @@ case class ResumeCertificationRoutes(repository: ResumeCertificationsRepository)
   def getWizardCertification() =
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      val form = ResumePageView.buildForm(Step.Certification, buildCertificationForm(result.getTitle(), result.getOrganization(), result.getYear(), result.getLocation()))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Certification), form)
+      val formContent = buildCertificationForm(result.getTitle(), result.getOrganization(), result.getYear(), result.getLocation())
+      ResumePageView.view(Step.Certification, formContent)
     else
-      val form = ResumePageView.buildForm(Step.Certification, buildCertificationForm("", "", "", ""))
-      ResumePageView.buildPage(ResumePageView.buildSteps(Step.Certification), form)
+      val formContent = buildCertificationForm("", "", "", "")
+      ResumePageView.view(Step.Certification, formContent)
 
   @cask.postForm("/wizard/certification")
   def postWizardCertification(title: String, organization: String, year: String, location: String) =
