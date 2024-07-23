@@ -1,12 +1,10 @@
 package net.sailware.resumewizard.resume.wizard
 
-import io.undertow.server.handlers.form.FormParserFactory
+import net.sailware.resumewizard.resume.wizard.ResumeSocialFormUtil
 import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
 import scalatags.Text.all.*
-
-import scala.collection.JavaConverters.asScalaIteratorConverter
 
 case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
@@ -20,33 +18,14 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
       val formContent = buildSocialsForm("", "")
       ResumePageView.view(Step.Social, formContent) 
 
-  case class SocialForm(val name: String, val url: String)
-
   @cask.post("/wizard/social")
   def postWizardSocial(request: cask.Request) =
-    val formData = FormParserFactory.builder().build().createParser(request.exchange).parseBlocking()
-    var data = Map.empty[String, SocialForm]
-    for key <- formData.iterator().asScala do
-      data = key match
-        case s"form[$i].$variable" =>
-          if data.contains(i) then
-            variable match
-              case "name" => data + (i -> data(i).copy(name = formData.get(key).element().getValue()))
-              case "url" => data + (i -> data(i).copy(url = formData.get(key).element().getValue()))
-              case _ => data
-          else
-            variable match
-              case "name" => data + (i -> SocialForm(formData.get(key).element().getValue(), ""))
-              case "url" => data + (i -> SocialForm("", formData.get(key).element().getValue()))
-              case _ => data
-        case _ => data
-
+    val form = ResumeSocialFormUtil.bind(request)
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      repository.update(result.getId(), data("0").name, data("0").url)
+      repository.update(result.getId(), form.socials(0).name, form.socials(0).url)
     else
-      repository.insert(data("0").name, data("0").url)
- 
+      repository.insert(form.socials(0).name, form.socials(0).url)
     cask.Redirect("/wizard/experience")
 
   def buildSocialsForm(socialName: String, url: String) =
