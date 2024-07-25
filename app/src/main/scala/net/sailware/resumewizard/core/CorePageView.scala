@@ -13,7 +13,21 @@ object CorePageView:
         title("Resume Wizard"),
         head(
           link(rel := "stylesheet", href := "/static/style.min.css"),
-          link(rel := "stylesheet", href := "/static/styles.css")
+          link(rel := "stylesheet", href := "/static/styles.css"),
+          script(src := " https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.5/dist/turbo.es2017-umd.min.js"),
+          script(`type` := "module")(
+            raw("""
+                  import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+                  window.Stimulus = Application.start()
+
+                  Stimulus.register("hello", class extends Controller {
+                    static targets = [ "name" ]
+                    connect() {
+                      console.log("Hello!")
+                    }
+                  })
+                """)
+          )
         ),
         body(
           div(cls := "main-wrapper")(
