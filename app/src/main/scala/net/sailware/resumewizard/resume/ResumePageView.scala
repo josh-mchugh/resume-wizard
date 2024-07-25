@@ -10,6 +10,25 @@ object ResumePageView:
     val content = buildContent(step, formContent)
     CorePageView.view(content)
 
+  def viewCustom(step: Step, content: Frag) =
+    CorePageView.view(customForm(step, content))
+
+  def customForm(step: Step, content: Frag) =
+    // Wizardly
+    div(cls := "row")(
+      div(cls := "col-md-12 stretch-card")(
+        div(cls := "card")(
+          div(cls := "card-body")(
+            h4(cls := "card-title")("Resume Wizard"),
+            div(cls := "wizardly")(
+              buildSteps(step),
+              content
+            )
+          )
+        )
+      )
+    )
+
   private def buildContent(step: Step, formContent: Frag) =
     // Wizardly
     div(cls := "row")(

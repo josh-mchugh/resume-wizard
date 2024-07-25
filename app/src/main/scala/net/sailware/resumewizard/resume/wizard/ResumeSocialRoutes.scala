@@ -5,6 +5,8 @@ import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.ResumeSocialFormUtil
 import net.sailware.resumewizard.resume.wizard.ResumeSocialView
 
+import scalatags.Text.all.*
+
 case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/social")
@@ -24,6 +26,5 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
     else
       repository.insert(form.socials(0).name, form.socials(0).url)
     cask.Redirect("/wizard/experience")
-
 
   initialize()
