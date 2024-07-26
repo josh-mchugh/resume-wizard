@@ -20,10 +20,18 @@ object CorePageView:
                   import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
                   window.Stimulus = Application.start()
 
-                  Stimulus.register("hello", class extends Controller {
-                    static targets = [ "name" ]
+                  Stimulus.register("fieldset", class extends Controller {
+                    static targets = [ "fieldset", "template", "entry", "newEntry" ]
                     connect() {
-                      console.log("Hello!")
+                      console.log(`fieldset: ${this.fieldsetTargets.length}`)
+                      console.log(`template: ${this.templateTarget}`)
+                      console.log(`entry: ${this.entryTargets.length}`)
+                      console.log(`newEntry: ${this.newEntryTargets.length}`)
+                    }
+                    addEntryBtn() {
+                      console.log("Clicked me!")
+                      this.fieldsetTarget.insertAdjacentHTML('afterend', this.templateTarget.innerHTML)
+                      console.log(`newEntry: ${this.newEntryTargets.length}`)
                     }
                   })
                 """)
