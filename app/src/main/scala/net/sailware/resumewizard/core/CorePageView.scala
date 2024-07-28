@@ -30,12 +30,16 @@ object CorePageView:
                     }
                     addEntry() {
                       console.log("onAddEntryClick - Clicked!")
-                      this.containerTarget.insertAdjacentHTML("beforeend", this.templateTarget.innerHTML)
+                      this.containerTarget.insertAdjacentHTML("beforeend", this.templateTarget.innerHTML.replaceAll("__ID_REPLACE__", this.newEntryTargets.length))
                       console.log(`newEntry: ${this.newEntryTargets.length}`)
                     }
                     removeEntry(event) {
                       console.log("onRemoveEntryClick - Clicked!")
                       event.target.parentElement.parentElement.remove()
+                      console.log(`newEntry: ${this.newEntryTargets.length}`)
+                      this.newEntryTargets.forEach(function(value, index){
+                        value.innerHTML = value.innerHTML.replaceAll(/newEntry\[\d+\]/g, `newEntry[${index}]`)
+                      })
                     }
                   })
                 """)

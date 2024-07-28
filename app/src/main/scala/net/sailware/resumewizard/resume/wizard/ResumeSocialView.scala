@@ -14,7 +14,7 @@ object ResumeSocialView:
       form(id := "form", method := "post", action := "/wizard/social")(
         div(cls := "wizardly__content")( 
           div(cls := "wizardly-form", attr("data-fieldsets-target") := "container")(
-            inputFields(socialName, url),
+            buildEntries(socialName, url),
           ),
           div(cls := "wizardly-actions")(
             button(cls := "btn btn-outline-secondary", `type` := "button", attr("data-action") := "click->fieldsets#addEntry")("Add Another"),
@@ -25,40 +25,27 @@ object ResumeSocialView:
       template()
     )
      
-  private def inputFields(socialName: String, url: String) =
-    List(
-      div(cls := "wizardly-form-entry", attr("data-fieldset-target") := "entry")(
-        div(cls := "wizardly-form-entry__delete")(
-          button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
-        ),
-        div(cls := "wizardly-form-entry__form-group")(
-          div()(
-            label(cls := "form-label")("Name"),
-            input(cls := "form-control", `type` := "text", name := "entry[0].name", placeholder := "Name", value := socialName)
-          ),
-          div(cls := "mt-3")(
-            label(cls := "form-label")("URL"),
-            input(cls := "form-control", `type` := "text", name := "entry[0].url", placeholder := "URL", value := url)
-          ),
-        )
-      )
-    )
+  private def buildEntries(socialName: String, url: String) =
+    List(buildEntry("entry", "0", socialName, url))
 
   private def template() =
     tag("template")(attr("data-fieldsets-target") := "template")(
-      div(cls := "wizardly-form-entry", attr("data-fieldsets-target") := "newEntry")(
-        div(cls := "wizardly-form-entry__delete")(
-          button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
+      buildEntry("newEntry", "__ID_REPLACE__", "", "")
+    )
+
+  private def buildEntry(fieldName: String, id: String, socialName: String, url: String) =
+    div(cls := "wizardly-form-entry", attr("data-fieldsets-target") := fieldName)(
+      div(cls := "wizardly-form-entry__delete")(
+        button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
+      ),
+      div(cls := "wizardly-form-entry__form-group")(
+        div()(
+          label(cls := "form-label")("Name"),
+          input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].name", placeholder := "Name", value := socialName)
         ),
-        div(cls := "wizardly-form-entry__form-group")(
-          div()(
-            label(cls := "form-label")("Name"),
-            input(cls := "form-control", `type` := "text", name := "newEntry[0].name", placeholder := "Name")
-          ),
-          div(cls := "mt-3")(
-            label(cls := "form-label")("URL"),
-            input(cls := "form-control", `type` := "text", name := "newEntry[0].url", placeholder := "URL")
-          ),
-        )
+        div(cls := "mt-3")(
+          label(cls := "form-label")("URL"),
+          input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].url", placeholder := "URL", value := url)
+        ),
       )
     )
