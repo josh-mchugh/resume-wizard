@@ -20,18 +20,22 @@ object CorePageView:
                   import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
                   window.Stimulus = Application.start()
 
-                  Stimulus.register("fieldset", class extends Controller {
-                    static targets = [ "fieldset", "template", "entry", "newEntry" ]
+                  Stimulus.register("fieldsets", class extends Controller {
+                    static targets = [ "container", "template", "entry", "newEntry" ]
                     connect() {
-                      console.log(`fieldset: ${this.fieldsetTargets.length}`)
+                      console.log(`container: ${this.containerTargets.length}`)
                       console.log(`template: ${this.templateTarget}`)
                       console.log(`entry: ${this.entryTargets.length}`)
                       console.log(`newEntry: ${this.newEntryTargets.length}`)
                     }
-                    addEntryBtn() {
-                      console.log("Clicked me!")
-                      this.fieldsetTarget.insertAdjacentHTML('afterend', this.templateTarget.innerHTML)
+                    addEntry() {
+                      console.log("onAddEntryClick - Clicked!")
+                      this.containerTarget.insertAdjacentHTML("beforeend", this.templateTarget.innerHTML)
                       console.log(`newEntry: ${this.newEntryTargets.length}`)
+                    }
+                    removeEntry(event) {
+                      console.log("onRemoveEntryClick - Clicked!")
+                      event.target.parentElement.parentElement.remove()
                     }
                   })
                 """)

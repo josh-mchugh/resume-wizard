@@ -52,10 +52,30 @@
     width: 100%;
     padding-bottom: 1rem;
 }
+
+.wizardly-form-entry {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+}
+
+.wizardly-form-entry__delete {
+    margin-left: 1.25rem;
+}
+
+.wizardly-form-entry__form-group {
+    width: 100%;
+}
+
+.wizardly-form-entry:not(:first-child) {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(101, 113, 225)
+}
+
 .wizardly-actions {
     display: flex;
-    justify-content: end;
-    gap: 10px;
+    justify-content: space-between;
 }
 
 .btn-disabled {
