@@ -1,7 +1,7 @@
-package net.sailware.resumewizard.resume.wizard
+package net.sailware.resumewizard.resume.wizard.social.view
 
 import net.sailware.resumewizard.resume.ResumePageView
-import net.sailware.resumewizard.resume.wizard.SocialViewRequest
+import net.sailware.resumewizard.resume.wizard.social.view.SocialViewRequest
 import scalatags.Text.all.*
 
 object ResumeSocialView:

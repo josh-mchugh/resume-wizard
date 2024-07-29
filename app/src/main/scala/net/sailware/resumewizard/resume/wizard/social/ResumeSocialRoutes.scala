@@ -1,9 +1,10 @@
-package net.sailware.resumewizard.resume.wizard
+package net.sailware.resumewizard.resume.wizard.social
 
 import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.ResumeSocialFormUtil
-import net.sailware.resumewizard.resume.wizard.ResumeSocialView
+import net.sailware.resumewizard.resume.wizard.social.ResumeSocialFormUtil
+import net.sailware.resumewizard.resume.wizard.social.view.ResumeSocialView
+import net.sailware.resumewizard.resume.wizard.social.view.SocialViewRequest
 
 import scalatags.Text.all.*
 
@@ -33,3 +34,5 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
     cask.Redirect("/wizard/experience")
 
   initialize()
+
+

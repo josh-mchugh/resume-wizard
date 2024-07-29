@@ -14,7 +14,7 @@ import net.sailware.resumewizard.resume.wizard.ResumeDetailsRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeExperienceRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeReviewRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeSkillRoutes
-import net.sailware.resumewizard.resume.wizard.ResumeSocialRoutes
+import net.sailware.resumewizard.resume.wizard.social.ResumeSocialRoutes
 
 object Application extends cask.Main:
 

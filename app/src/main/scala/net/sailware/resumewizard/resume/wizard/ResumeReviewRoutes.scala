@@ -77,9 +77,4 @@ case class ResumeReviewRoutes(
       if certificationsOption.isDefined then certifications else frag()
     )
 
-
-
-    
-
-
   initialize()
