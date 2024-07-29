@@ -11,11 +11,11 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
 
   @cask.get("/wizard/social")
   def getWizardSocial() =
-    if repository.fetchCount() > 0 then
-      val result = repository.fetchOne()
-      ResumeSocialView.view(SocialViewRequest(Step.Social, result.getName(), result.getUrl()))
+    val results = repository.fetch()
+    if results.nonEmpty then
+      ResumeSocialView.view(SocialViewRequest(Step.Social, results.map(social => (social.getId(), social.getName(), social.getUrl()))))
     else
-      ResumeSocialView.view(SocialViewRequest(Step.Social, "", ""))
+      ResumeSocialView.view(SocialViewRequest(Step.Social, List.empty))
 
   @cask.post("/wizard/social")
   def postWizardSocial(request: cask.Request) =

@@ -7,14 +7,14 @@ import scalatags.Text.all.*
 object ResumeSocialView:
 
   def view(request: SocialViewRequest) =
-    ResumePageView.viewCustom(request.step, formContent(request.name, request.url))
+    ResumePageView.viewCustom(request.step, formContent(request.socials))
 
-  private def formContent(socialName: String, url: String) =
+  private def formContent(socials: List[(Int, String, String)]) =
     div(attr("data-controller") := "fieldsets")(
       form(id := "form", method := "post", action := "/wizard/social")(
         div(cls := "wizardly__content")( 
           div(cls := "wizardly-form", attr("data-fieldsets-target") := "container")(
-            buildEntries(socialName, url),
+            buildEntries(socials),
           ),
           div(cls := "wizardly-actions")(
             button(cls := "btn btn-outline-secondary", `type` := "button", attr("data-action") := "click->fieldsets#addEntry")("Add Another"),
@@ -25,8 +25,11 @@ object ResumeSocialView:
       template()
     )
      
-  private def buildEntries(socialName: String, url: String) =
-    List(buildEntry("entry", "0", socialName, url))
+  private def buildEntries(socials: List[(Int, String, String)]) =
+    if socials.nonEmpty then
+      socials.map((id, name, url) => buildEntry("entry", id.toString(), name, url))
+    else
+      List(buildEntry("newEntry", "0", "", ""))
 
   private def template() =
     tag("template")(attr("data-fieldsets-target") := "template")(

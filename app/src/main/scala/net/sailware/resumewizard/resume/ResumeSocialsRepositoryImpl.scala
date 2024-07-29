@@ -3,6 +3,7 @@ package net.sailware.resumewizard.resume
 import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_SOCIALS
 import net.sailware.resumewizard.jooq.tables.records.ResumeSocialsRecord
+import scala.jdk.CollectionConverters.*
 import scala.jdk.OptionConverters.RichOptional
 
 class ResumeSocialsRepositoryImpl(databaseResource: DatabaseResource) extends ResumeSocialsRepository:
@@ -15,6 +16,9 @@ class ResumeSocialsRepositoryImpl(databaseResource: DatabaseResource) extends Re
 
   override def fetchOption(): Option[ResumeSocialsRecord] =
     databaseResource.ctx.fetchOptional(RESUME_SOCIALS).asScala
+
+  override def fetch(): List[ResumeSocialsRecord] =
+    databaseResource.ctx.selectFrom(RESUME_SOCIALS).fetchInto(classOf[ResumeSocialsRecord]).asScala.toList
 
   override def insert(name: String, url: String): Unit =
     databaseResource.ctx.insertInto(
