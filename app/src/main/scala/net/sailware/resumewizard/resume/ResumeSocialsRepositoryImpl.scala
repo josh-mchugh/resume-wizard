@@ -4,18 +4,9 @@ import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_SOCIALS
 import net.sailware.resumewizard.jooq.tables.records.ResumeSocialsRecord
 import scala.jdk.CollectionConverters.*
-import scala.jdk.OptionConverters.RichOptional
+import scala.collection.JavaConverters.AsJavaCollection
 
 class ResumeSocialsRepositoryImpl(databaseResource: DatabaseResource) extends ResumeSocialsRepository:
-
-  override def fetchCount(): Long =
-    databaseResource.ctx.fetchCount(RESUME_SOCIALS)
-
-  override def fetchOne(): ResumeSocialsRecord =
-    databaseResource.ctx.fetchOne(RESUME_SOCIALS)
-
-  override def fetchOption(): Option[ResumeSocialsRecord] =
-    databaseResource.ctx.fetchOptional(RESUME_SOCIALS).asScala
 
   override def fetch(): List[ResumeSocialsRecord] =
     databaseResource.ctx.selectFrom(RESUME_SOCIALS).fetchInto(classOf[ResumeSocialsRecord]).asScala.toList
@@ -34,4 +25,9 @@ class ResumeSocialsRepositoryImpl(databaseResource: DatabaseResource) extends Re
       .set(RESUME_SOCIALS.NAME, name)
       .set(RESUME_SOCIALS.URL, url)
       .where(RESUME_SOCIALS.ID.eq(id))
+      .execute()
+
+  override def deleteByExcludedIds(ids: List[Int]): Unit =
+    databaseResource.ctx.delete(RESUME_SOCIALS)
+      .where(RESUME_SOCIALS.ID.notIn(ids.asJava))
       .execute()

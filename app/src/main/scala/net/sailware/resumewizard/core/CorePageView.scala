@@ -22,21 +22,12 @@ object CorePageView:
 
                   Stimulus.register("fieldsets", class extends Controller {
                     static targets = [ "container", "template", "entry", "newEntry" ]
-                    connect() {
-                      console.log(`container: ${this.containerTargets.length}`)
-                      console.log(`template: ${this.templateTarget}`)
-                      console.log(`entry: ${this.entryTargets.length}`)
-                      console.log(`newEntry: ${this.newEntryTargets.length}`)
-                    }
+                    connect() { }
                     addEntry() {
-                      console.log("onAddEntryClick - Clicked!")
                       this.containerTarget.insertAdjacentHTML("beforeend", this.templateTarget.innerHTML.replaceAll("__ID_REPLACE__", this.newEntryTargets.length))
-                      console.log(`newEntry: ${this.newEntryTargets.length}`)
                     }
                     removeEntry(event) {
-                      console.log("onRemoveEntryClick - Clicked!")
                       event.target.parentElement.parentElement.remove()
-                      console.log(`newEntry: ${this.newEntryTargets.length}`)
                       this.newEntryTargets.forEach(function(value, index){
                         value.innerHTML = value.innerHTML.replaceAll(/newEntry\[\d+\]/g, `newEntry[${index}]`)
                       })

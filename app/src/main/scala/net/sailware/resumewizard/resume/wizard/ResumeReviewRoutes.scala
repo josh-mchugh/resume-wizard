@@ -25,13 +25,13 @@ case class ResumeReviewRoutes(
   @cask.get("/wizard/review")
   def getWizardReview() =
     val detailsOption = detailsRepository.fetchOption()
-    val socialsOption = socialsRepository.fetchOption()
+    val socials = socialsRepository.fetch()
     val experiencesOption = experiencesRepository.fetchOption()
     val skillsOption = skillsRepository.fetchOption()
     val certificationsOption = certificationsRepository.fetchOption()
-    ResumePageView.view(Step.Review, buildReview(detailsOption, socialsOption, experiencesOption, skillsOption, certificationsOption))
+    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiencesOption, skillsOption, certificationsOption))
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socialsOption: Option[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -41,9 +41,11 @@ case class ResumeReviewRoutes(
         p(strong("Location: "), detailsOption.get.getLocation()),
     )
 
-    val socials = List(
-      p(strong("Social Name: "), socialsOption.get.getName()),
-      p(strong("Social URL: "), socialsOption.get.getUrl()),
+    val socialTags = socials.map(social =>
+      List(
+        p(strong(s"Social[${social.getId()}] Name: "), social.getName()),
+        p(strong(s"Social[${social.getId()}] URL: "), social.getUrl()),
+      )
     )
 
     val experiences = List(
@@ -69,7 +71,7 @@ case class ResumeReviewRoutes(
 
     div()(
       if detailsOption.isDefined then details else frag(),
-      if socialsOption.isDefined then socials else frag(),
+      if socialTags.nonEmpty then socialTags else frag(),
       if experiencesOption.isDefined then experiences else frag(),
       if skillsOption.isDefined then skills else frag(),
       if certificationsOption.isDefined then certifications else frag()

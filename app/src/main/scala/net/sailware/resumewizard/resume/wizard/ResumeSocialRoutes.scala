@@ -20,11 +20,16 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
   @cask.post("/wizard/social")
   def postWizardSocial(request: cask.Request) =
     val form = ResumeSocialFormUtil.bind(request)
-    if repository.fetchCount() > 0 then
-      val result = repository.fetchOne()
-      repository.update(result.getId(), form.socials(0).name, form.socials(0).url)
-    else
-      repository.insert(form.socials(0).name, form.socials(0).url)
+
+    // delete removed values
+    repository.deleteByExcludedIds(form.entries.map(_.id))
+
+    // update values
+    form.entries.foreach(social => repository.update(social.id, social.name, social.url))
+
+    // insert new values
+    form.newEntries.foreach(social => repository.insert(social.name, social.url))
+
     cask.Redirect("/wizard/experience")
 
   initialize()
