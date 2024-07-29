@@ -1,7 +1,8 @@
 package net.sailware.resumewizard.resume.wizard.social.view
 
 import net.sailware.resumewizard.resume.ResumePageView
-import net.sailware.resumewizard.resume.wizard.social.view.SocialViewRequest
+import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
+import net.sailware.resumewizard.resume.wizard.social.view.model.Social
 import scalatags.Text.all.*
 
 object ResumeSocialView:
@@ -9,7 +10,7 @@ object ResumeSocialView:
   def view(request: SocialViewRequest) =
     ResumePageView.viewCustom(request.step, formContent(request.socials))
 
-  private def formContent(socials: List[(Int, String, String)]) =
+  private def formContent(socials: List[Social]) =
     div(attr("data-controller") := "fieldsets")(
       form(id := "form", method := "post", action := "/wizard/social")(
         div(cls := "wizardly__content")( 
@@ -25,9 +26,9 @@ object ResumeSocialView:
       template()
     )
      
-  private def buildEntries(socials: List[(Int, String, String)]) =
+  private def buildEntries(socials: List[Social]) =
     if socials.nonEmpty then
-      socials.map((id, name, url) => buildEntry("entry", id.toString(), name, url))
+      socials.map(social => buildEntry("entry", social.id.toString(), social.name, social.url))
     else
       List(buildEntry("newEntry", "0", "", ""))
 
