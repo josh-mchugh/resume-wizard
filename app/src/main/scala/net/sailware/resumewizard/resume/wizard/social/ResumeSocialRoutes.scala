@@ -13,9 +13,9 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
 
   @cask.get("/wizard/social")
   def getWizardSocial() =
-    val results = repository.fetch()
-    if results.nonEmpty then
-      val socials = results.map(social => Social(social.getId(), social.getName(), social.getUrl()))
+    if repository.fetchCount() > 0 then
+      val socials = repository.fetch()
+        .map(social => Social(social.getId(), social.getName(), social.getUrl()))
       ResumeSocialView.view(SocialViewRequest(Step.Social, socials))
     else
       ResumeSocialView.view(SocialViewRequest(Step.Social, List.empty))

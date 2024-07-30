@@ -8,6 +8,9 @@ import scala.collection.JavaConverters.AsJavaCollection
 
 class ResumeSocialsRepositoryImpl(databaseResource: DatabaseResource) extends ResumeSocialsRepository:
 
+  override def fetchCount(): Long =
+    databaseResource.ctx.fetchCount(RESUME_SOCIALS)
+
   override def fetch(): List[ResumeSocialsRecord] =
     databaseResource.ctx.selectFrom(RESUME_SOCIALS).fetchInto(classOf[ResumeSocialsRecord]).asScala.toList
 
