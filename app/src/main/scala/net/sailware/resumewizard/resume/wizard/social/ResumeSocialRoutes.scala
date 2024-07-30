@@ -6,7 +6,6 @@ import net.sailware.resumewizard.resume.wizard.social.form.SocialListForm
 import net.sailware.resumewizard.resume.wizard.social.view.ResumeSocialView
 import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
 import net.sailware.resumewizard.resume.wizard.social.view.model.Social
-
 import scalatags.Text.all.*
 
 case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
