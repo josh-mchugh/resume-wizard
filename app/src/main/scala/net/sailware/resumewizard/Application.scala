@@ -11,9 +11,9 @@ import net.sailware.resumewizard.resume.ResumeSkillsRepositoryImpl
 import net.sailware.resumewizard.resume.ResumeSocialsRepositoryImpl
 import net.sailware.resumewizard.resume.wizard.ResumeCertificationRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeDetailsRoutes
-import net.sailware.resumewizard.resume.wizard.ResumeExperienceRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeReviewRoutes
 import net.sailware.resumewizard.resume.wizard.ResumeSkillRoutes
+import net.sailware.resumewizard.resume.wizard.social.ResumeExperienceRoutes
 import net.sailware.resumewizard.resume.wizard.social.ResumeSocialRoutes
 
 object Application extends cask.Main:
