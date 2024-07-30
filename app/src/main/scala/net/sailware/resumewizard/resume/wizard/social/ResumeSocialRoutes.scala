@@ -2,7 +2,7 @@ package net.sailware.resumewizard.resume.wizard.social
 
 import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.social.ResumeSocialFormUtil
+import net.sailware.resumewizard.resume.wizard.social.form.SocialListForm
 import net.sailware.resumewizard.resume.wizard.social.view.ResumeSocialView
 import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
 import net.sailware.resumewizard.resume.wizard.social.view.model.Social
@@ -14,16 +14,16 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
   @cask.get("/wizard/social")
   def getWizardSocial() =
     val results = repository.fetch()
-     if results.nonEmpty then
-      // TODO: Create a model object for the view of Social
-      ResumeSocialView.view(SocialViewRequest(Step.Social, results.map(social => Social(social.getId(), social.getName(), social.getUrl()))))
+    if results.nonEmpty then
+      val socials = results.map(social => Social(social.getId(), social.getName(), social.getUrl()))
+      ResumeSocialView.view(SocialViewRequest(Step.Social, socials))
     else
       ResumeSocialView.view(SocialViewRequest(Step.Social, List.empty))
 
   @cask.post("/wizard/social")
   def postWizardSocial(request: cask.Request) =
-    // TODO: can ResumeSocialFormUtil just be SocialListForm with a companion object?
-    val form = ResumeSocialFormUtil.bind(request)
+    // build form from request
+    val form = SocialListForm(request)
 
     // delete removed values
     repository.deleteByExcludedIds(form.entries.map(_.id))
