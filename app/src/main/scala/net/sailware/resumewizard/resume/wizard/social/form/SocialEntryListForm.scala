@@ -2,7 +2,6 @@ package net.sailware.resumewizard.resume.wizard.social.form
 
 import io.undertow.server.handlers.form.FormData
 import net.sailware.resumewizard.core.FormUtil
-
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
 case class SocialEntryListForm(
