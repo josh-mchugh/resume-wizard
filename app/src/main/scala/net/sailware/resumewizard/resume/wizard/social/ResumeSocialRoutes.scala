@@ -4,8 +4,8 @@ import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.social.form.SocialListForm
 import net.sailware.resumewizard.resume.wizard.social.view.ResumeSocialView
-import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
 import net.sailware.resumewizard.resume.wizard.social.view.model.Social
+import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
 import scalatags.Text.all.*
 
 case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
@@ -13,8 +13,7 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
   @cask.get("/wizard/social")
   def getWizardSocial() =
     if repository.fetchCount() > 0 then
-      val socials = repository.fetch()
-        .map(social => Social(social.getId(), social.getName(), social.getUrl()))
+      val socials = repository.fetch().map(record => Social(record))
       ResumeSocialView.view(SocialViewRequest(Step.Social, socials))
     else
       ResumeSocialView.view(SocialViewRequest(Step.Social, List.empty))

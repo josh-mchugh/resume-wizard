@@ -13,17 +13,7 @@ case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(impli
   @cask.get("/wizard/experience")
   def getWizardExperience() =
     if repository.fetchCount() > 0 then
-      val experiences = repository.fetch().map(experience =>
-        Experience(
-          experience.getId(),
-          experience.getTitle(),
-          experience.getOrganization(),
-          experience.getDuration(),
-          experience.getLocation(),
-          experience.getDescription(),
-          experience.getSkills()
-        )
-      )
+      val experiences = repository.fetch().map(record => Experience(record))
       ResumeExperienceView.view(ExperienceViewRequest(Step.Experience, experiences))
     else
       ResumeExperienceView.view(ExperienceViewRequest(Step.Experience, List.empty))

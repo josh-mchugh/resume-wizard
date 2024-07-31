@@ -12,7 +12,7 @@ case class SocialEntryListForm(
 
 object SocialListForm:
 
-def apply(request: cask.Request): SocialEntry ListForm =
+  def apply(request: cask.Request): SocialEntryListForm =
     FormUtil.bind[SocialEntryListForm](request, transformBind)
 
   private val transformBind = (formData: FormData) =>
