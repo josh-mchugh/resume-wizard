@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard
+package net.sailware.resumewizard.resume.wizard.detail
 
 import net.sailware.resumewizard.resume.ResumeDetailsRepository
 import net.sailware.resumewizard.resume.ResumePageView

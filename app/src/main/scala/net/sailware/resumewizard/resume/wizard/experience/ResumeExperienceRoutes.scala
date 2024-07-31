@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard.social
+package net.sailware.resumewizard.resume.wizard.experience
 
 import net.sailware.resumewizard.resume.ResumeExperiencesRepository
 import net.sailware.resumewizard.resume.Step
