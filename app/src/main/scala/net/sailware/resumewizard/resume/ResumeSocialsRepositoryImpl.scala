@@ -12,7 +12,10 @@ class ResumeSocialsRepositoryImpl(databaseResource: DatabaseResource) extends Re
     databaseResource.ctx.fetchCount(RESUME_SOCIALS)
 
   override def fetch(): List[ResumeSocialsRecord] =
-    databaseResource.ctx.selectFrom(RESUME_SOCIALS).fetchInto(classOf[ResumeSocialsRecord]).asScala.toList
+    databaseResource.ctx.selectFrom(RESUME_SOCIALS)
+      .fetchInto(classOf[ResumeSocialsRecord])
+      .asScala
+      .toList
 
   override def insert(name: String, url: String): Unit =
     databaseResource.ctx.insertInto(

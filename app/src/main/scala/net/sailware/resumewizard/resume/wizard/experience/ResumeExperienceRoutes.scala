@@ -13,17 +13,18 @@ case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(impli
   @cask.get("/wizard/experience")
   def getWizardExperience() =
     if repository.fetchCount() > 0 then
-      val result = repository.fetchOne()
-      val experience = Experience(
-        result.getId(),
-        result.getTitle(),
-        result.getOrganization(),
-        result.getDuration(),
-        result.getLocation(),
-        result.getDescription(),
-        result.getSkills()
+      val experiences = repository.fetch().map(experience =>
+        Experience(
+          experience.getId(),
+          experience.getTitle(),
+          experience.getOrganization(),
+          experience.getDuration(),
+          experience.getLocation(),
+          experience.getDescription(),
+          experience.getSkills()
+        )
       )
-      ResumeExperienceView.view(ExperienceViewRequest(Step.Experience, List(experience)))
+      ResumeExperienceView.view(ExperienceViewRequest(Step.Experience, experiences))
     else
       ResumeExperienceView.view(ExperienceViewRequest(Step.Experience, List.empty))
 
@@ -31,13 +32,17 @@ case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(impli
   def postWizardExperience(request: cask.Request) =
     // build form from request
     val form = ExperienceListForm(request)
-    println(form)
-    /*if repository.fetchCount() > 0 then
-      val result = repository.fetchOne()
-      repository.update(result.getId(), title, organization, duration, location, description, skills)
-    else
-      repository.insert(title, organization, duration, location, description, skills)
-     */
+
+    // delete removed values
+    val experienceIds = form.entries.map(_.id)
+    repository.deleteByExcludedIds(experienceIds)
+
+    // update values
+    form.entries.foreach(entry => repository.update(entry.id, entry.title, entry.organization, entry.duration, entry.location, entry.description, entry.skills))
+
+    // insert new values
+    form.newEntries.foreach(entry => repository.insert(entry.title, entry.organization, entry.duration, entry.location, entry.description, entry.skills))
+
     cask.Redirect("/wizard/skill")
 
   initialize()

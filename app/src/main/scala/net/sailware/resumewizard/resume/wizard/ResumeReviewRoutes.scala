@@ -26,12 +26,12 @@ case class ResumeReviewRoutes(
   def getWizardReview() =
     val detailsOption = detailsRepository.fetchOption()
     val socials = socialsRepository.fetch()
-    val experiencesOption = experiencesRepository.fetchOption()
+    val experiences = experiencesRepository.fetch()
     val skillsOption = skillsRepository.fetchOption()
     val certificationsOption = certificationsRepository.fetchOption()
-    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiencesOption, skillsOption, certificationsOption))
+    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skillsOption, certificationsOption))
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiencesOption: Option[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiences: List[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -48,13 +48,15 @@ case class ResumeReviewRoutes(
       )
     )
 
-    val experiences = List(
-      p(strong("Experience Title: "), experiencesOption.get.getTitle()),
-      p(strong("Experience Organization: "), experiencesOption.get.getOrganization()),
-      p(strong("Experience Duration: "), experiencesOption.get.getDuration()),
-      p(strong("Experience Location: "), experiencesOption.get.getLocation()),
-      p(strong("Experience Description: "), experiencesOption.get.getDescription()),
-      p(strong("Experience Skills: "), experiencesOption.get.getSkills()),
+    val experienceTags = experiences.map(experience =>
+      List(
+        p(strong(s"Experience[${experience.getId()}] Title: "), experience.getTitle()),
+        p(strong(s"Experience[${experience.getId()}] Organization: "), experience.getOrganization()),
+        p(strong(s"Experience[${experience.getId()}] Duration: "), experience.getDuration()),
+        p(strong(s"Experience[${experience.getId()}] Location: "), experience.getLocation()),
+        p(strong(s"Experience[${experience.getId()}] Description: "), experience.getDescription()),
+        p(strong(s"Experience[${experience.getId()}] Skills: "), experience.getSkills()),
+      )
     )
 
     val skills = List(
@@ -72,7 +74,7 @@ case class ResumeReviewRoutes(
     div()(
       if detailsOption.isDefined then details else frag(),
       if socialTags.nonEmpty then socialTags else frag(),
-      if experiencesOption.isDefined then experiences else frag(),
+      if experienceTags.nonEmpty then experienceTags else frag(),
       if skillsOption.isDefined then skills else frag(),
       if certificationsOption.isDefined then certifications else frag()
     )

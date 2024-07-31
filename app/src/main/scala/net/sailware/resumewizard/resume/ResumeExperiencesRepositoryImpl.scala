@@ -3,18 +3,19 @@ package net.sailware.resumewizard.resume
 import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_EXPERIENCES
 import net.sailware.resumewizard.jooq.tables.records.ResumeExperiencesRecord
-import scala.jdk.OptionConverters.RichOptional
+import scala.jdk.CollectionConverters.*
+import scala.collection.JavaConverters.AsJavaCollection
 
 class ResumeExperiencesRepositoryImpl(databaseResource: DatabaseResource) extends ResumeExperiencesRepository:
 
   override def fetchCount(): Long =
     databaseResource.ctx.fetchCount(RESUME_EXPERIENCES)
 
-  override def fetchOne(): ResumeExperiencesRecord =
-    databaseResource.ctx.fetchOne(RESUME_EXPERIENCES)
-
-  override def fetchOption(): Option[ResumeExperiencesRecord] =
-    databaseResource.ctx.fetchOptional(RESUME_EXPERIENCES).asScala
+  override def fetch(): List[ResumeExperiencesRecord] =
+    databaseResource.ctx.selectFrom(RESUME_EXPERIENCES)
+      .fetchInto(classOf[ResumeExperiencesRecord])
+      .asScala
+      .toList
 
   override def insert(title: String, organization: String, duration: String, location: String, description: String, skills: String): Unit =
     databaseResource.ctx.insertInto(
@@ -38,4 +39,9 @@ class ResumeExperiencesRepositoryImpl(databaseResource: DatabaseResource) extend
       .set(RESUME_EXPERIENCES.DESCRIPTION, description)
       .set(RESUME_EXPERIENCES.SKILLS, skills)
       .where(RESUME_EXPERIENCES.ID.eq(id))
+      .execute()
+
+  override def deleteByExcludedIds(ids: List[Int]): Unit =
+    databaseResource.ctx.delete(RESUME_EXPERIENCES)
+      .where(RESUME_EXPERIENCES.ID.notIn(ids.asJava))
       .execute()
