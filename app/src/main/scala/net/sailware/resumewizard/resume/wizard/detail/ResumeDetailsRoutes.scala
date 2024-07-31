@@ -1,21 +1,21 @@
 package net.sailware.resumewizard.resume.wizard.detail
 
 import net.sailware.resumewizard.resume.ResumeDetailsRepository
-import net.sailware.resumewizard.resume.ResumePageView
 import net.sailware.resumewizard.resume.Step
-import scalatags.Text.all.*
+import net.sailware.resumewizard.resume.wizard.detail.view.ResumeDetailView
+import net.sailware.resumewizard.resume.wizard.detail.view.model.Detail
+import net.sailware.resumewizard.resume.wizard.detail.view.model.DetailViewRequest
 
 case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
   @cask.get("/wizard/detail")
   def getWizardName() =
     if repository.fetchCount() > 0 then
-      val result = repository.fetchOne()
-      val formContent = buildNameAndTitleForm(result.getName(), result.getTitle(), result.getSummary(), result.getPhone(), result.getEmail(), result.getLocation())
-      ResumePageView.view(Step.Detail, formContent)
+      val record= repository.fetchOne()
+      val detail = Detail(record)
+      ResumeDetailView.view(DetailViewRequest(Step.Detail, detail))
     else
-      val formContent = buildNameAndTitleForm("", "", "", "", "", "")
-      ResumePageView.view(Step.Detail, formContent) 
+      ResumeDetailView.view(DetailViewRequest(Step.Detail, Detail()))
 
   @cask.postForm("/wizard/detail")
   def postWizardName(name: String, title: String, summary: String, phone: String, email: String, location: String) =
@@ -25,34 +25,6 @@ case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc:
     else
       repository.insert(name, title, summary, phone, email, location)
     cask.Redirect("/wizard/social")
-
-  def buildNameAndTitleForm(resumeName: String, title: String, summary: String, phone: String, email: String, location: String) =
-    List(
-      div()(
-        label(cls := "form-label")("Name"),
-        input(cls := "form-control", `type` := "text", name := "name", placeholder := "Name", value := resumeName)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Title"),
-        input(cls := "form-control", `type` := "text", name := "title", placeholder := "Title", value := title)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Summary"),
-        textarea(cls := "form-control", rows := 3, name := "summary",  placeholder := "Summary of your current or previous role")(summary)
-      ),
-      div()(
-        label(cls := "form-label")("Phone Number"),
-        input(cls := "form-control", `type` := "text", name := "phone", placeholder := "Phone Number", value := phone)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Email Address"),
-        input(cls := "form-control", `type` := "text", name := "email", placeholder := "Email Address", value := email)
-      ),
-      div(cls := "mt-3")(
-        label(cls := "form-label")("Location"),
-        input(cls := "form-control", `type` := "text", name := "location", placeholder := "Location", value := location)
-      )
-    )
 
   initialize()
 
