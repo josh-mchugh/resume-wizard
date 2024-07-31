@@ -2,7 +2,7 @@ package net.sailware.resumewizard.resume.wizard.social
 
 import net.sailware.resumewizard.resume.ResumeExperiencesRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.experience.form.ExperienceListForm
+import net.sailware.resumewizard.resume.wizard.experience.form.ExperienceEntryListForm
 import net.sailware.resumewizard.resume.wizard.experience.view.ResumeExperienceView
 import net.sailware.resumewizard.resume.wizard.experience.view.model.Experience
 import net.sailware.resumewizard.resume.wizard.experience.view.model.ExperienceViewRequest
@@ -31,7 +31,7 @@ case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(impli
   @cask.post("/wizard/experience")
   def postWizardExperience(request: cask.Request) =
     // build form from request
-    val form = ExperienceListForm(request)
+    val form = ExperienceEntryListForm(request)
 
     // delete removed values
     val experienceIds = form.entries.map(_.id)
