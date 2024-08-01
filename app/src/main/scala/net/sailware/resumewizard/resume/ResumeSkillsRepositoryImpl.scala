@@ -4,11 +4,18 @@ import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_SKILLS
 import net.sailware.resumewizard.jooq.tables.records.ResumeSkillsRecord
 import scala.jdk.OptionConverters.RichOptional
+import scala.jdk.CollectionConverters.*
 
 class ResumeSkillsRepositoryImpl(databaseResource: DatabaseResource) extends ResumeSkillsRepository:
 
   override def fetchCount(): Long =
     databaseResource.ctx.fetchCount(RESUME_SKILLS)
+
+  override def fetch(): List[ResumeSkillsRecord] =
+    databaseResource.ctx.selectFrom(RESUME_SKILLS)
+      .fetchInto(classOf[ResumeSkillsRecord])
+      .asScala
+      .toList
 
   override def fetchOne(): ResumeSkillsRecord =
     databaseResource.ctx.fetchOne(RESUME_SKILLS)

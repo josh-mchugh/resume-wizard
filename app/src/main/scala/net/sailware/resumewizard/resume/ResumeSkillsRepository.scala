@@ -7,6 +7,7 @@ import net.sailware.resumewizard.jooq.tables.records.ResumeSkillsRecord
 trait ResumeSkillsRepository:
 
   def fetchCount(): Long
+  def fetch(): List[ResumeSkillsRecord]
   def fetchOne(): ResumeSkillsRecord
   def fetchOption(): Option[ResumeSkillsRecord]
   def insert(name: String, rating: Short): Unit
