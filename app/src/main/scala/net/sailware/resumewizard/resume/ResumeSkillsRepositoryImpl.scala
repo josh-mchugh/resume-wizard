@@ -3,8 +3,8 @@ package net.sailware.resumewizard.resume
 import net.sailware.resumewizard.database.DatabaseResource
 import net.sailware.resumewizard.jooq.Tables.RESUME_SKILLS
 import net.sailware.resumewizard.jooq.tables.records.ResumeSkillsRecord
-import scala.jdk.OptionConverters.RichOptional
 import scala.jdk.CollectionConverters.*
+import scala.collection.JavaConverters.AsJavaCollection
 
 class ResumeSkillsRepositoryImpl(databaseResource: DatabaseResource) extends ResumeSkillsRepository:
 
@@ -16,12 +16,6 @@ class ResumeSkillsRepositoryImpl(databaseResource: DatabaseResource) extends Res
       .fetchInto(classOf[ResumeSkillsRecord])
       .asScala
       .toList
-
-  override def fetchOne(): ResumeSkillsRecord =
-    databaseResource.ctx.fetchOne(RESUME_SKILLS)
-
-  override def fetchOption(): Option[ResumeSkillsRecord] =
-    databaseResource.ctx.fetchOptional(RESUME_SKILLS).asScala
 
   override def insert(name: String, rating: Short): Unit =
     databaseResource.ctx.insertInto(
@@ -37,4 +31,9 @@ class ResumeSkillsRepositoryImpl(databaseResource: DatabaseResource) extends Res
       .set(RESUME_SKILLS.NAME, name)
       .set(RESUME_SKILLS.RATING, rating)
       .where(RESUME_SKILLS.ID.eq(id))
+      .execute()
+
+  override def deleteByExcludedIds(ids: List[Int]): Unit =
+    databaseResource.ctx.delete(RESUME_SKILLS)
+      .where(RESUME_SKILLS.ID.notIn(ids.asJava))
       .execute()

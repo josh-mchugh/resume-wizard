@@ -2,7 +2,7 @@ package net.sailware.resumewizard.resume.wizard.social
 
 import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.social.form.SocialListForm
+import net.sailware.resumewizard.resume.wizard.social.form.SocialEntryListForm
 import net.sailware.resumewizard.resume.wizard.social.view.ResumeSocialView
 import net.sailware.resumewizard.resume.wizard.social.view.model.Social
 import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
@@ -20,7 +20,7 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
   @cask.post("/wizard/social")
   def postWizardSocial(request: cask.Request) =
     // build form from request
-    val form = SocialListForm(request)
+    val form = SocialEntryListForm(request)
 
     // delete removed values
     repository.deleteByExcludedIds(form.entries.map(_.id))

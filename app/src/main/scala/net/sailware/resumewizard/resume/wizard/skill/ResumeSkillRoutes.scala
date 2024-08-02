@@ -2,6 +2,7 @@ package net.sailware.resumewizard.resume.wizard
 
 import net.sailware.resumewizard.resume.ResumeSkillsRepository
 import net.sailware.resumewizard.resume.Step
+import net.sailware.resumewizard.resume.wizard.skill.form.SkillEntryListForm
 import net.sailware.resumewizard.resume.wizard.skill.view.ResumeSkillView
 import net.sailware.resumewizard.resume.wizard.skill.view.model.Skill
 import net.sailware.resumewizard.resume.wizard.skill.view.model.SkillViewRequest
@@ -16,13 +17,20 @@ case class ResumeSkillRoutes(repository: ResumeSkillsRepository)(implicit cc: ca
     else
       ResumeSkillView.view(SkillViewRequest(Step.Skill, List.empty))
 
-  @cask.postForm("/wizard/skill")
-  def postWizardSkill(name: String, rating: Short) =
-    if repository.fetchCount() > 0 then
-      val result = repository.fetchOne()
-      repository.update(result.getId(), name, rating)
-    else
-      repository.insert(name, rating)
+  @cask.post("/wizard/skill")
+  def postWizardSkill(request: cask.Request) =
+    // build form from request
+    val form = SkillEntryListForm(request)
+
+    // delete removed values
+    repository.deleteByExcludedIds(form.entries.map(_.id))
+
+    // update values
+    form.entries.foreach(skill => repository.update(skill.id, skill.name, skill.rating))
+
+    // insert new values
+    form.newEntries.foreach(skill => repository.insert(skill.name, skill.rating))
+
     cask.Redirect("/wizard/certification")
 
   initialize()

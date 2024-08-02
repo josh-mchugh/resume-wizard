@@ -49,7 +49,7 @@ object ResumeSkillView:
         ),
         div(cls := "mt-3")(
           label(cls := "form-label")("Rating"),
-        input(cls := "form-range", `type` := "range", name := "rating", min := 0, max := 5, step := 1, value := rating)
+        input(cls := "form-range", `type` := "range", name := s"$fieldName[$id].rating", min := 0, max := 5, step := 1, value := rating)
         ),
       )
     )

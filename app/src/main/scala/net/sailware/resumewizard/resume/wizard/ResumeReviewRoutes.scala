@@ -27,11 +27,11 @@ case class ResumeReviewRoutes(
     val detailsOption = detailsRepository.fetchOption()
     val socials = socialsRepository.fetch()
     val experiences = experiencesRepository.fetch()
-    val skillsOption = skillsRepository.fetchOption()
+    val skills = skillsRepository.fetch()
     val certificationsOption = certificationsRepository.fetchOption()
-    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skillsOption, certificationsOption))
+    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skills, certificationsOption))
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiences: List[ResumeExperiencesRecord], skillsOption: Option[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiences: List[ResumeExperiencesRecord], skills: List[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -59,9 +59,11 @@ case class ResumeReviewRoutes(
       )
     )
 
-    val skills = List(
-      p(strong("Skill Name: "), skillsOption.get.getName()),
-      p(strong("Skill Rating: "), skillsOption.get.getRating().toString()),
+    val skillTags = skills.map(skill =>
+      List(
+          p(strong(s"Skill[${skill.getId()}] Name: "), skill.getName()),
+          p(strong(s"Skill[${skill.getId()}] Rating: "), skill.getRating().toString()),
+      )
     )
 
     val certifications = List(
@@ -75,7 +77,7 @@ case class ResumeReviewRoutes(
       if detailsOption.isDefined then details else frag(),
       if socialTags.nonEmpty then socialTags else frag(),
       if experienceTags.nonEmpty then experienceTags else frag(),
-      if skillsOption.isDefined then skills else frag(),
+      if skills.nonEmpty then skillTags else frag(),
       if certificationsOption.isDefined then certifications else frag()
     )
 
