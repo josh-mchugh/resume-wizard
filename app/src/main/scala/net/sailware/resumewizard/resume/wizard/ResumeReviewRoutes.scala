@@ -28,10 +28,10 @@ case class ResumeReviewRoutes(
     val socials = socialsRepository.fetch()
     val experiences = experiencesRepository.fetch()
     val skills = skillsRepository.fetch()
-    val certificationsOption = certificationsRepository.fetchOption()
-    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skills, certificationsOption))
+    val certifications = certificationsRepository.fetch()
+    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skills, certifications))
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiences: List[ResumeExperiencesRecord], skills: List[ResumeSkillsRecord], certificationsOption: Option[ResumeCertificationsRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiences: List[ResumeExperiencesRecord], skills: List[ResumeSkillsRecord], certifications: List[ResumeCertificationsRecord]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -66,11 +66,13 @@ case class ResumeReviewRoutes(
       )
     )
 
-    val certifications = List(
-      p(strong("Certification Title: ", certificationsOption.get.getTitle())),
-      p(strong("Certification Organization: "), certificationsOption.get.getOrganization()),
-      p(strong("Certification Year: "), certificationsOption.get.getYear()),
-      p(strong("Certification Location: "), certificationsOption.get.getLocation()),
+    val certificationTags = certifications.map(certification =>
+      List(
+        p(strong(s"Certification[${certification.getId()}] Title: ", certification.getTitle())),
+        p(strong(s"Certification[${certification.getId()}] Organization: "), certification.getOrganization()),
+        p(strong(s"Certification[${certification.getId()}] Year: "), certification.getYear()),
+        p(strong(s"Certification[${certification.getId()}] Location: "), certification.getLocation()),
+      )
     )
 
     div()(
@@ -78,7 +80,7 @@ case class ResumeReviewRoutes(
       if socialTags.nonEmpty then socialTags else frag(),
       if experienceTags.nonEmpty then experienceTags else frag(),
       if skills.nonEmpty then skillTags else frag(),
-      if certificationsOption.isDefined then certifications else frag()
+      if certifications.nonEmpty then certificationTags else frag()
     )
 
   initialize()
