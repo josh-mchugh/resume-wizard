@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard.certification.form
+package net.sailware.resumewizard.resume.wizard.certification.view.model
 
 case class CertificationNewEntryForm(
   val title: String,

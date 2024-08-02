@@ -2,10 +2,10 @@ package net.sailware.resumewizard.resume.wizard
 
 import net.sailware.resumewizard.resume.ResumeCertificationsRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.certification.form.CertificationEntryListForm
 import net.sailware.resumewizard.resume.wizard.certification.view.ResumeCertificationView
 import net.sailware.resumewizard.resume.wizard.certification.view.model.Certification
 import net.sailware.resumewizard.resume.wizard.certification.view.model.CertificationViewRequest
+import net.sailware.resumewizard.resume.wizard.certification.view.model.CertificationEntryListForm
 
 case class ResumeCertificationRoutes(repository: ResumeCertificationsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
