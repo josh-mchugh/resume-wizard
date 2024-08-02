@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard.social.form
+package net.sailware.resumewizard.resume.wizard.social.view.model
 
 case class SocialEntryForm(
   val id: Int,

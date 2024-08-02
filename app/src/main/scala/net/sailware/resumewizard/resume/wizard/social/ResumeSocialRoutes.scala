@@ -2,10 +2,10 @@ package net.sailware.resumewizard.resume.wizard.social
 
 import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.social.form.SocialEntryListForm
 import net.sailware.resumewizard.resume.wizard.social.view.ResumeSocialView
 import net.sailware.resumewizard.resume.wizard.social.view.model.Social
 import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
+import net.sailware.resumewizard.resume.wizard.social.view.model.SocialEntryListForm
 
 case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 
