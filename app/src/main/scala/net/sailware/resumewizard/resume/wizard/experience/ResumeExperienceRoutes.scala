@@ -2,10 +2,10 @@ package net.sailware.resumewizard.resume.wizard.experience
 
 import net.sailware.resumewizard.resume.ResumeExperiencesRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.experience.form.ExperienceEntryListForm
 import net.sailware.resumewizard.resume.wizard.experience.view.ResumeExperienceView
 import net.sailware.resumewizard.resume.wizard.experience.view.model.Experience
 import net.sailware.resumewizard.resume.wizard.experience.view.model.ExperienceViewRequest
+import net.sailware.resumewizard.resume.wizard.experience.view.model.ExperienceEntryListForm
 import scalatags.Text.all.*
 
 case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:

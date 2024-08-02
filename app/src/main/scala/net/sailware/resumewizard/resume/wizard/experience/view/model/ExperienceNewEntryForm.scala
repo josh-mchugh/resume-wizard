@@ -1,7 +1,6 @@
-package net.sailware.resumewizard.resume.wizard.experience.form
+package net.sailware.resumewizard.resume.wizard.experience.view.model
 
-case class ExperienceEntryForm(
-  val id: Int,
+case class ExperienceNewEntryForm(
   val title: String,
   val organization: String,
   val duration: String,
