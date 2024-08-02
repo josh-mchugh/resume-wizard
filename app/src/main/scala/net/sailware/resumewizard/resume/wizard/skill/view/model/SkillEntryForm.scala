@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard.skill.form
+package net.sailware.resumewizard.resume.wizard.skill.view.model
 
 case class SkillEntryForm(
   id: Int,

@@ -2,10 +2,10 @@ package net.sailware.resumewizard.resume.wizard
 
 import net.sailware.resumewizard.resume.ResumeSkillsRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.skill.form.SkillEntryListForm
 import net.sailware.resumewizard.resume.wizard.skill.view.ResumeSkillView
 import net.sailware.resumewizard.resume.wizard.skill.view.model.Skill
 import net.sailware.resumewizard.resume.wizard.skill.view.model.SkillViewRequest
+import net.sailware.resumewizard.resume.wizard.skill.view.model.SkillEntryListForm
 
 case class ResumeSkillRoutes(repository: ResumeSkillsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
 

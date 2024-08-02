@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard.skill.form
+package net.sailware.resumewizard.resume.wizard.skill.view.model
 
 import io.undertow.server.handlers.form.FormData
 import net.sailware.resumewizard.core.FormUtil
