@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard
+package net.sailware.resumewizard.resume.wizard.skill
 
 import net.sailware.resumewizard.resume.ResumeSkillsRepository
 import net.sailware.resumewizard.resume.Step
@@ -18,16 +18,12 @@ case class ResumeSkillRoutes(repository: ResumeSkillsRepository)(implicit cc: ca
 
   @cask.post("/wizard/skill")
   def postWizardSkill(request: cask.Request) =
-    // build form from request
     val form = SkillEntryListForm(request)
 
-    // delete removed values
     repository.deleteByExcludedIds(form.entries.map(_.id))
 
-    // update values
     form.entries.foreach(skill => repository.update(skill.id, skill.name, skill.rating))
 
-    // insert new values
     form.newEntries.foreach(skill => repository.insert(skill.name, skill.rating))
 
     cask.Redirect("/wizard/certification")

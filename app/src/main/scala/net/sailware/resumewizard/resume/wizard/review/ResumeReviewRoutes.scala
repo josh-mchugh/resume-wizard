@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard
+package net.sailware.resumewizard.resume.wizard.review
 
 import net.sailware.resumewizard.resume.Certification
 import net.sailware.resumewizard.resume.Detail

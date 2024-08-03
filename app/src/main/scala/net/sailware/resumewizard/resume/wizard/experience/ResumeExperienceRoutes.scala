@@ -19,17 +19,13 @@ case class ResumeExperienceRoutes(repository: ResumeExperiencesRepository)(impli
 
   @cask.post("/wizard/experience")
   def postWizardExperience(request: cask.Request) =
-    // build form from request
     val form = ExperienceEntryListForm(request)
 
-    // delete removed values
     val experienceIds = form.entries.map(_.id)
     repository.deleteByExcludedIds(experienceIds)
 
-    // update values
     form.entries.foreach(entry => repository.update(entry.id, entry.title, entry.organization, entry.duration, entry.location, entry.description, entry.skills))
 
-    // insert new values
     form.newEntries.foreach(entry => repository.insert(entry.title, entry.organization, entry.duration, entry.location, entry.description, entry.skills))
 
     cask.Redirect("/wizard/skill")

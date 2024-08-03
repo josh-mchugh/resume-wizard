@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard
+package net.sailware.resumewizard.resume.wizard.certification
 
 import net.sailware.resumewizard.resume.ResumeCertificationsRepository
 import net.sailware.resumewizard.resume.Step
@@ -18,7 +18,6 @@ case class ResumeCertificationRoutes(repository: ResumeCertificationsRepository)
 
   @cask.post("/wizard/certification")
   def postWizardCertification(request: cask.Request) =
-
     val form = CertificationEntryListForm(request)
 
     repository.deleteByExcludedIds(form.entries.map(_.id))

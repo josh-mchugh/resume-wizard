@@ -18,16 +18,12 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
 
   @cask.post("/wizard/social")
   def postWizardSocial(request: cask.Request) =
-    // build form from request
     val form = SocialEntryListForm(request)
 
-    // delete removed values
     repository.deleteByExcludedIds(form.entries.map(_.id))
 
-    // update values
     form.entries.foreach(social => repository.update(social.id, social.name, social.url))
 
-    // insert new values
     form.newEntries.foreach(social => repository.insert(social.name, social.url))
 
     cask.Redirect("/wizard/experience")
