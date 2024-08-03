@@ -1,4 +1,4 @@
-package net.sailware.resumewizard.resume.wizard.experience.view.model
+package net.sailware.resumewizard.resume
 
 import net.sailware.resumewizard.jooq.tables.records.ResumeExperiencesRecord
 

@@ -1,7 +1,7 @@
 package net.sailware.resumewizard.resume.wizard.certification.view
 
+import net.sailware.resumewizard.resume.Certification
 import net.sailware.resumewizard.resume.ResumePageView
-import net.sailware.resumewizard.resume.wizard.certification.view.model.Certification
 import net.sailware.resumewizard.resume.wizard.certification.view.model.CertificationViewRequest
 import scalatags.Text.all.*
 

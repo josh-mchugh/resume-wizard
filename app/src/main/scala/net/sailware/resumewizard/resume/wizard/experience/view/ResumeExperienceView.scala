@@ -1,7 +1,7 @@
 package net.sailware.resumewizard.resume.wizard.experience.view
 
+import net.sailware.resumewizard.resume.Experience
 import net.sailware.resumewizard.resume.ResumePageView
-import net.sailware.resumewizard.resume.wizard.experience.view.model.Experience
 import net.sailware.resumewizard.resume.wizard.experience.view.model.ExperienceViewRequest
 import scalatags.Text.all.*
 

@@ -1,9 +1,9 @@
 package net.sailware.resumewizard.resume.wizard
 
+import net.sailware.resumewizard.resume.Certification
 import net.sailware.resumewizard.resume.ResumeCertificationsRepository
 import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.certification.view.ResumeCertificationView
-import net.sailware.resumewizard.resume.wizard.certification.view.model.Certification
 import net.sailware.resumewizard.resume.wizard.certification.view.model.CertificationViewRequest
 import net.sailware.resumewizard.resume.wizard.certification.view.model.CertificationEntryListForm
 
@@ -12,7 +12,7 @@ case class ResumeCertificationRoutes(repository: ResumeCertificationsRepository)
   @cask.get("/wizard/certification")
   def getWizardCertification() =
     if repository.fetchCount() > 0 then
-      val certifications = repository.fetch().map(record => Certification(record))
+      val certifications = repository.fetch()
       ResumeCertificationView.view(CertificationViewRequest(Step.Certification, certifications))
     else
       ResumeCertificationView.view(CertificationViewRequest(Step.Certification, List.empty))

@@ -1,5 +1,7 @@
 package net.sailware.resumewizard.resume.wizard
 
+import net.sailware.resumewizard.resume.Certification
+import net.sailware.resumewizard.resume.Experience
 import net.sailware.resumewizard.resume.ResumeCertificationsRepository
 import net.sailware.resumewizard.resume.ResumeDetailsRepository
 import net.sailware.resumewizard.resume.ResumeExperiencesRepository
@@ -31,7 +33,7 @@ case class ResumeReviewRoutes(
     val certifications = certificationsRepository.fetch()
     ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skills, certifications))
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiences: List[ResumeExperiencesRecord], skills: List[ResumeSkillsRecord], certifications: List[ResumeCertificationsRecord]) =
+  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[ResumeSocialsRecord], experiences: List[Experience], skills: List[ResumeSkillsRecord], certifications: List[Certification]) =
     val details = List(
         p(strong("Name: "), detailsOption.get.getName()),
         p(strong("Title: "), detailsOption.get.getTitle()),
@@ -50,12 +52,12 @@ case class ResumeReviewRoutes(
 
     val experienceTags = experiences.map(experience =>
       List(
-        p(strong(s"Experience[${experience.getId()}] Title: "), experience.getTitle()),
-        p(strong(s"Experience[${experience.getId()}] Organization: "), experience.getOrganization()),
-        p(strong(s"Experience[${experience.getId()}] Duration: "), experience.getDuration()),
-        p(strong(s"Experience[${experience.getId()}] Location: "), experience.getLocation()),
-        p(strong(s"Experience[${experience.getId()}] Description: "), experience.getDescription()),
-        p(strong(s"Experience[${experience.getId()}] Skills: "), experience.getSkills()),
+        p(strong(s"Experience[${experience.id}] Title: "), experience.title),
+        p(strong(s"Experience[${experience.id}] Organization: "), experience.organization),
+        p(strong(s"Experience[${experience.id}] Duration: "), experience.duration),
+        p(strong(s"Experience[${experience.id}] Location: "), experience.location),
+        p(strong(s"Experience[${experience.id}] Description: "), experience.description),
+        p(strong(s"Experience[${experience.id}] Skills: "), experience.skills),
       )
     )
 
@@ -68,10 +70,10 @@ case class ResumeReviewRoutes(
 
     val certificationTags = certifications.map(certification =>
       List(
-        p(strong(s"Certification[${certification.getId()}] Title: ", certification.getTitle())),
-        p(strong(s"Certification[${certification.getId()}] Organization: "), certification.getOrganization()),
-        p(strong(s"Certification[${certification.getId()}] Year: "), certification.getYear()),
-        p(strong(s"Certification[${certification.getId()}] Location: "), certification.getLocation()),
+        p(strong(s"Certification[${certification.id}] Title: "), certification.title),
+        p(strong(s"Certification[${certification.id}] Organization: "), certification.organization),
+        p(strong(s"Certification[${certification.id}] Year: "), certification.year),
+        p(strong(s"Certification[${certification.id}] Location: "), certification.location),
       )
     )
 

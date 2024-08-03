@@ -11,11 +11,12 @@ class ResumeCertificationsRepositoryImpl(databaseResource: DatabaseResource) ext
   override def fetchCount(): Long =
     databaseResource.ctx.fetchCount(RESUME_CERTIFICATIONS)
 
-  override def fetch(): List[ResumeCertificationsRecord] =
+  override def fetch(): List[Certification] =
     databaseResource.ctx.selectFrom(RESUME_CERTIFICATIONS)
       .fetchInto(classOf[ResumeCertificationsRecord])
       .asScala
       .toList
+      .map(record => Certification(record))
 
   override def insert(title: String, organization: String, year: String, location: String): Unit =
     databaseResource.ctx.insertInto(
