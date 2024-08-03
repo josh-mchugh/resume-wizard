@@ -1,8 +1,9 @@
-package net.sailware.resumewizard.resume.wizard.detail.view.model
+package net.sailware.resumewizard.resume
 
 import net.sailware.resumewizard.jooq.tables.records.ResumeDetailsRecord
 
 case class Detail(
+  val id: Int,
   val name: String,
   val title: String,
   val summary: String,
@@ -15,6 +16,7 @@ object Detail:
 
   def apply(record: ResumeDetailsRecord): Detail =
     Detail(
+      record.getId(),
       record.getName(),
       record.getTitle(),
       record.getSummary(),
@@ -24,4 +26,4 @@ object Detail:
     )
 
   def apply(): Detail =
-    Detail("", "", "", "", "", "")
+    Detail(0, "", "", "", "", "", "")

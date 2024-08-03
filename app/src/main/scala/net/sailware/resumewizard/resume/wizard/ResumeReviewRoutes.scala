@@ -1,6 +1,7 @@
 package net.sailware.resumewizard.resume.wizard
 
 import net.sailware.resumewizard.resume.Certification
+import net.sailware.resumewizard.resume.Detail
 import net.sailware.resumewizard.resume.Experience
 import net.sailware.resumewizard.resume.Skill
 import net.sailware.resumewizard.resume.Social
@@ -35,14 +36,14 @@ case class ResumeReviewRoutes(
     val certifications = certificationsRepository.fetch()
     ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skills, certifications))
 
-  def buildReview(detailsOption: Option[ResumeDetailsRecord], socials: List[Social], experiences: List[Experience], skills: List[Skill], certifications: List[Certification]) =
+  def buildReview(detailsOption: Option[Detail], socials: List[Social], experiences: List[Experience], skills: List[Skill], certifications: List[Certification]) =
     val details = List(
-        p(strong("Name: "), detailsOption.get.getName()),
-        p(strong("Title: "), detailsOption.get.getTitle()),
-        p(strong("Summary: "), detailsOption.get.getSummary()),
-        p(strong("Phone: "), detailsOption.get.getPhone()),
-        p(strong("Email: "), detailsOption.get.getEmail()),
-        p(strong("Location: "), detailsOption.get.getLocation()),
+        p(strong("Name: "), detailsOption.get.name),
+        p(strong("Title: "), detailsOption.get.title),
+        p(strong("Summary: "), detailsOption.get.summary),
+        p(strong("Phone: "), detailsOption.get.phone),
+        p(strong("Email: "), detailsOption.get.email),
+        p(strong("Location: "), detailsOption.get.location),
     )
 
     val socialTags = socials.map(social =>

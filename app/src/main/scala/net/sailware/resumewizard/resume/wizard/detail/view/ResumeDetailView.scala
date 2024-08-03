@@ -1,7 +1,7 @@
 package net.sailware.resumewizard.resume.wizard.detail.view
 
+import net.sailware.resumewizard.resume.Detail
 import net.sailware.resumewizard.resume.ResumePageView
-import net.sailware.resumewizard.resume.wizard.detail.view.model.Detail
 import net.sailware.resumewizard.resume.wizard.detail.view.model.DetailViewRequest
 import scalatags.Text.all.*
 

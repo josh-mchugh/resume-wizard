@@ -1,10 +1,10 @@
 package net.sailware.resumewizard.resume.wizard.detail
 
+import net.sailware.resumewizard.resume.Detail
 import net.sailware.resumewizard.resume.ResumeDetailsRepository
 import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.detail.form.DetailForm
 import net.sailware.resumewizard.resume.wizard.detail.view.ResumeDetailView
-import net.sailware.resumewizard.resume.wizard.detail.view.model.Detail
 import net.sailware.resumewizard.resume.wizard.detail.view.model.DetailViewRequest
 
 case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
@@ -12,8 +12,8 @@ case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc:
   @cask.get("/wizard/detail")
   def getWizardDetail() =
     if repository.fetchCount() > 0 then
-      val record= repository.fetchOne()
-      ResumeDetailView.view(DetailViewRequest(Step.Detail, Detail(record)))
+      val detail = repository.fetchOne()
+      ResumeDetailView.view(DetailViewRequest(Step.Detail, detail))
     else
       ResumeDetailView.view(DetailViewRequest(Step.Detail, Detail()))
 
@@ -22,7 +22,7 @@ case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc:
     val form = DetailForm(request)
     if repository.fetchCount() > 0 then
       val result = repository.fetchOne()
-      repository.update(result.getId(), form.name, form.title, form.summary, form.phone, form.email, form.location)
+      repository.update(result.id, form.name, form.title, form.summary, form.phone, form.email, form.location)
     else
       repository.insert(form.name, form.title, form.summary, form.phone, form.email, form.location)
     cask.Redirect("/wizard/social")

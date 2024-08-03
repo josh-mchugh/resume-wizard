@@ -10,11 +10,13 @@ class ResumeDetailsRepositoryImpl(databaseResource: DatabaseResource) extends Re
   override def fetchCount(): Long =
     databaseResource.ctx.fetchCount(RESUME_DETAILS)
 
-  override def fetchOne(): ResumeDetailsRecord =
-    databaseResource.ctx.fetchOne(RESUME_DETAILS)
+  override def fetchOne(): Detail =
+    val record = databaseResource.ctx.fetchOne(RESUME_DETAILS)
+    Detail(record)
 
-  override def fetchOption(): Option[ResumeDetailsRecord] =
+  override def fetchOption(): Option[Detail] =
     databaseResource.ctx.fetchOptional(RESUME_DETAILS).asScala
+      .map(record => Detail(record))
 
   override def insert(name: String, title: String, summary: String, phone: String, email: String, location: String): Unit =
     databaseResource.ctx.insertInto(
