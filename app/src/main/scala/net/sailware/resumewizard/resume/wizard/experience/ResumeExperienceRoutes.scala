@@ -1,6 +1,5 @@
 package net.sailware.resumewizard.resume.wizard.experience
 
-import net.sailware.resumewizard.resume.Experience
 import net.sailware.resumewizard.resume.ResumeExperiencesRepository
 import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.experience.view.ResumeExperienceView

@@ -3,7 +3,6 @@ package net.sailware.resumewizard.resume.wizard
 import net.sailware.resumewizard.resume.ResumeSkillsRepository
 import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.skill.view.ResumeSkillView
-import net.sailware.resumewizard.resume.wizard.skill.view.model.Skill
 import net.sailware.resumewizard.resume.wizard.skill.view.model.SkillViewRequest
 import net.sailware.resumewizard.resume.wizard.skill.view.model.SkillEntryListForm
 
@@ -12,7 +11,7 @@ case class ResumeSkillRoutes(repository: ResumeSkillsRepository)(implicit cc: ca
   @cask.get("/wizard/skill")
   def getWizardSkill() =
     if repository.fetchCount() > 0 then
-      val skills = repository.fetch().map(record => Skill(record))
+      val skills = repository.fetch()
       ResumeSkillView.view(SkillViewRequest(Step.Skill, skills))
     else
       ResumeSkillView.view(SkillViewRequest(Step.Skill, List.empty))

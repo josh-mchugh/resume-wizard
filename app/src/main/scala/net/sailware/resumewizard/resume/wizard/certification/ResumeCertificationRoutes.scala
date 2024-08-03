@@ -1,6 +1,5 @@
 package net.sailware.resumewizard.resume.wizard
 
-import net.sailware.resumewizard.resume.Certification
 import net.sailware.resumewizard.resume.ResumeCertificationsRepository
 import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.certification.view.ResumeCertificationView

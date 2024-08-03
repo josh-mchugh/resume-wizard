@@ -11,11 +11,12 @@ class ResumeSkillsRepositoryImpl(databaseResource: DatabaseResource) extends Res
   override def fetchCount(): Long =
     databaseResource.ctx.fetchCount(RESUME_SKILLS)
 
-  override def fetch(): List[ResumeSkillsRecord] =
+  override def fetch(): List[Skill] =
     databaseResource.ctx.selectFrom(RESUME_SKILLS)
       .fetchInto(classOf[ResumeSkillsRecord])
       .asScala
       .toList
+      .map(record => Skill(record))
 
   override def insert(name: String, rating: Short): Unit =
     databaseResource.ctx.insertInto(
