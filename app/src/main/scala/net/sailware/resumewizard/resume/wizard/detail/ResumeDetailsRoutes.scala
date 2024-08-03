@@ -3,8 +3,8 @@ package net.sailware.resumewizard.resume.wizard.detail
 import net.sailware.resumewizard.resume.Detail
 import net.sailware.resumewizard.resume.ResumeDetailsRepository
 import net.sailware.resumewizard.resume.Step
-import net.sailware.resumewizard.resume.wizard.detail.form.DetailForm
 import net.sailware.resumewizard.resume.wizard.detail.view.ResumeDetailView
+import net.sailware.resumewizard.resume.wizard.detail.view.model.DetailForm
 import net.sailware.resumewizard.resume.wizard.detail.view.model.DetailViewRequest
 
 case class ResumeDetailsRoutes(repository: ResumeDetailsRepository)(implicit cc: castor.Context, log: cask.Logger) extends cask.Routes:
