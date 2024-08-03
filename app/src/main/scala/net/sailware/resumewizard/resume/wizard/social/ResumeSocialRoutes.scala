@@ -3,7 +3,6 @@ package net.sailware.resumewizard.resume.wizard.social
 import net.sailware.resumewizard.resume.ResumeSocialsRepository
 import net.sailware.resumewizard.resume.Step
 import net.sailware.resumewizard.resume.wizard.social.view.ResumeSocialView
-import net.sailware.resumewizard.resume.wizard.social.view.model.Social
 import net.sailware.resumewizard.resume.wizard.social.view.model.SocialViewRequest
 import net.sailware.resumewizard.resume.wizard.social.view.model.SocialEntryListForm
 
@@ -12,7 +11,7 @@ case class ResumeSocialRoutes(repository: ResumeSocialsRepository)(implicit cc: 
   @cask.get("/wizard/social")
   def getWizardSocial() =
     if repository.fetchCount() > 0 then
-      val socials = repository.fetch().map(record => Social(record))
+      val socials = repository.fetch()
       ResumeSocialView.view(SocialViewRequest(Step.Social, socials))
     else
       ResumeSocialView.view(SocialViewRequest(Step.Social, List.empty))
