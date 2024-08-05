@@ -34,7 +34,10 @@ case class ResumeReviewRoutes(
     val experiences = experiencesRepository.fetch()
     val skills = skillsRepository.fetch()
     val certifications = certificationsRepository.fetch()
-    ResumePageView.view(Step.Review, buildReview(detailsOption, socials, experiences, skills, certifications))
+    ResumePageView.view(
+      Step.Review,
+      buildReview(detailsOption, socials, experiences, skills, certifications)
+    )
 
   def buildReview(detailsOption: Option[Detail], socials: List[Social], experiences: List[Experience], skills: List[Skill], certifications: List[Certification]) =
     val details = List(
@@ -80,12 +83,81 @@ case class ResumeReviewRoutes(
       )
     )
 
-    div()(
-      if detailsOption.isDefined then details else frag(),
-      if socialTags.nonEmpty then socialTags else frag(),
-      if experienceTags.nonEmpty then experienceTags else frag(),
-      if skills.nonEmpty then skillTags else frag(),
-      if certifications.nonEmpty then certificationTags else frag()
+    div(cls := "page")(
+      div(cls := "page__content")(
+        // Section - Name
+        div(cls := "section")(
+          div()(
+            if detailsOption.isDefined then detailsOption.get.name else frag()
+          )
+        ),
+        // Section - Title
+        div(cls := "section")(
+          div()(
+            if detailsOption.isDefined then detailsOption.get.title else frag()
+          )
+        ),
+        // Section - Contact Info
+        div(cls := "section")(
+          div()(
+            if detailsOption.isDefined then List(detailsOption.get.phone, detailsOption.get.email, detailsOption.get.location).mkString(" | ") else frag()
+          )
+        ),
+        // Section - Socials
+        div(cls := "section")(
+          div()(
+            socials.map(social => social.url).mkString(" | ")
+          )
+        ),
+        // Section - Header Summary
+        div(cls := "section")(
+          div()("Summary")
+        ),
+        // Section - Summary
+        div(cls := "section")(
+          div()(
+            if detailsOption.isDefined then detailsOption.get.summary else frag()
+          )
+        ),
+        // Section - Header Skills
+        div(cls := "section")(
+          div()("Skills")
+        ),
+        // Section - Skills
+        div(cls := "section")(
+          div()(
+            skills.map(skill => skill.name).mkString(" | ")
+          )
+        ),
+        // Section - Header Experience
+        div(cls := "section")(
+          div()("Experience")
+        ),
+        // Section - Experience
+        div(cls := "section")(
+          for experience <- experiences yield
+            List(
+              div()(experience.title),
+              div()(List(experience.organization, experience.location, experience.duration).mkString(" | ")),
+              ul()(
+                for description <- experience.description.split("\n") yield
+                  li()(description)
+              )
+            )
+        ),
+        // Section - Header Certification
+        div(cls := "section")(
+          div()("Certification")
+        ),
+        // Section - Header
+        div(cls := "section")(
+          for certification <- certifications yield
+            List(
+              div()(certification.title),
+              div()(List(certification.organization, certification.location, certification.year).mkString(" | "))
+            )
+        )
+      )
     )
 
   initialize()
