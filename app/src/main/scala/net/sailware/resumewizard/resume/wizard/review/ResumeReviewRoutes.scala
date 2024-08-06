@@ -40,78 +40,47 @@ case class ResumeReviewRoutes(
     )
 
   def buildReview(detailsOption: Option[Detail], socials: List[Social], experiences: List[Experience], skills: List[Skill], certifications: List[Certification]) =
-    val details = List(
-        p(strong("Name: "), detailsOption.get.name),
-        p(strong("Title: "), detailsOption.get.title),
-        p(strong("Summary: "), detailsOption.get.summary),
-        p(strong("Phone: "), detailsOption.get.phone),
-        p(strong("Email: "), detailsOption.get.email),
-        p(strong("Location: "), detailsOption.get.location),
-    )
-
-    val socialTags = socials.map(social =>
-      List(
-        p(strong(s"Social[${social.id}] Name: "), social.name),
-        p(strong(s"Social[${social.id}] URL: "), social.url),
-      )
-    )
-
-    val experienceTags = experiences.map(experience =>
-      List(
-        p(strong(s"Experience[${experience.id}] Title: "), experience.title),
-        p(strong(s"Experience[${experience.id}] Organization: "), experience.organization),
-        p(strong(s"Experience[${experience.id}] Duration: "), experience.duration),
-        p(strong(s"Experience[${experience.id}] Location: "), experience.location),
-        p(strong(s"Experience[${experience.id}] Description: "), experience.description),
-        p(strong(s"Experience[${experience.id}] Skills: "), experience.skills),
-      )
-    )
-
-    val skillTags = skills.map(skill =>
-      List(
-          p(strong(s"Skill[${skill.id}] Name: "), skill.name),
-          p(strong(s"Skill[${skill.id}] Rating: "), skill.rating.toString),
-      )
-    )
-
-    val certificationTags = certifications.map(certification =>
-      List(
-        p(strong(s"Certification[${certification.id}] Title: "), certification.title),
-        p(strong(s"Certification[${certification.id}] Organization: "), certification.organization),
-        p(strong(s"Certification[${certification.id}] Year: "), certification.year),
-        p(strong(s"Certification[${certification.id}] Location: "), certification.location),
-      )
-    )
 
     div(cls := "page")(
       div(cls := "page__content")(
         // Section - Name
-        div(cls := "section")(
-          div()(
-            if detailsOption.isDefined then detailsOption.get.name else frag()
-          )
+        div(cls := "section section--x-centered")(
+          if detailsOption.isDefined then
+            div(cls := "name")(detailsOption.get.name)
+          else
+            frag()
         ),
         // Section - Title
-        div(cls := "section")(
-          div()(
-            if detailsOption.isDefined then detailsOption.get.title else frag()
-          )
+        div(cls := "section section--x-centered")(
+          if detailsOption.isDefined then
+            div(cls := "title")(detailsOption.get.title)
+          else
+            frag()
         ),
         // Section - Contact Info
-        div(cls := "section")(
-          div()(
-            if detailsOption.isDefined then List(detailsOption.get.phone, detailsOption.get.email, detailsOption.get.location).mkString(" | ") else frag()
-          )
-        ),
-        // Section - Socials
-        div(cls := "section")(
-          div()(
-            socials.map(social => social.url).mkString(" | ")
-          )
+        div(cls := "section section--x-centered")(
+          if detailsOption.isDefined then
+            div(cls := "details")(
+              List(
+                detailsOption.get.phone,
+                detailsOption.get.email,
+                detailsOption.get.location
+              ).map(value => div(cls := "details__item")(value))
+            )
+          else
+            frag()
         ),
         // Section - Header Summary
         div(cls := "section")(
-          div()("Summary")
+          div(cls := "header")(
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+            div(cls := "header__text")("Summary"),
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+          )
         ),
         // Section - Summary
         div(cls := "section")(
@@ -121,42 +90,90 @@ case class ResumeReviewRoutes(
         ),
         // Section - Header Skills
         div(cls := "section")(
-          div()("Skills")
+          div(cls := "header")(
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+            div(cls := "header__text")("Skills"),
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+          )
         ),
         // Section - Skills
         div(cls := "section")(
-          div()(
-            skills.map(skill => skill.name).mkString(" | ")
+          div(cls := "skills")(
+            for skill <- skills yield
+              div(cls := "skills__item")(skill.name)
           )
         ),
         // Section - Header Experience
         div(cls := "section")(
-          div()("Experience")
+          div(cls := "header")(
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+            div(cls := "header__text")("Experiences"),
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+          )
         ),
         // Section - Experience
         div(cls := "section")(
           for experience <- experiences yield
             List(
-              div()(experience.title),
-              div()(List(experience.organization, experience.location, experience.duration).mkString(" | ")),
-              ul()(
+              div(cls := "experience-details")(
+                div(cls := "experience-details__title")(experience.title),
+                div()(
+                  List(
+                    experience.organization,
+                    experience.location,
+                    experience.duration
+                  ).mkString("  |  ")
+                ),
+              ),
+              ul(cls := "experience-descriptions")(
                 for description <- experience.description.split("\n") yield
-                  li()(description)
+                  li(cls := "experience-descriptions__item")(description)
               )
             )
         ),
         // Section - Header Certification
         div(cls := "section")(
-          div()("Certification")
+          div(cls := "header")(
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+            div(cls := "header__text")("Certifications"),
+            div(cls := "header-divider")(
+              div(cls := "header-divider__line")
+            ),
+          )
         ),
         // Section - Header
         div(cls := "section")(
           for certification <- certifications yield
             List(
-              div()(certification.title),
-              div()(List(certification.organization, certification.location, certification.year).mkString(" | "))
+              div(cls := "certification")(
+                div(cls := "certification__title")(certification.title),
+                div()(
+                  List(
+                    certification.organization,
+                    certification.location,
+                    certification.year
+                  ).mkString("  |  ")
+                )
+              )
             )
-        )
+        ),
+        // Section - Socials
+        div(cls := "section section--x-centered")(
+          div(cls := "socials")(
+            for social <- socials yield
+              div(cls := "socials__item")(social.url)
+          )
+        ),
       )
     )
 

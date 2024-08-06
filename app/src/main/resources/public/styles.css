@@ -1,3 +1,17 @@
+:root {
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --gray-950: #020617;
+}
+
 .wizardly {
     display: grid;
     grid-template-columns: 2fr 6fr;
@@ -89,3 +103,158 @@
     cursor: not-allowed;
 }
 
+/* Resume Page Layout Styles */
+.page__content {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    font-weight: 300;
+    font-color: var(--gray-600);
+}
+
+.section {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.section--x-centered {
+    justify-content: center;
+}
+
+.name {
+    display: flex;
+    font-size: 4.5rem;
+    font-weight: 400;
+    font-color: var(--gray-700);
+    letter-spacing: 0.25rem;
+}
+
+.title {
+    display: flex;
+    margin: 0.75rem 0;
+    font-size: 1.5rem;
+    letter-spacing: 0.25rem;
+}
+
+.details {
+    display: flex;
+    margin: 0.25rem 0;
+    font-size: 1.25rem;
+}
+
+.details__item {
+    display: flex;
+    padding-right: 0.75rem;
+}
+
+.details__item:not(:first-child) {
+    border-left: 1px solid var(--gray-500);
+    padding-left: 0.75rem;
+}
+
+.socials {
+    display: flex;
+    margin: 4rem 0 0 0;
+    font-size: 1rem;
+}
+
+.socials__item {
+    display: flex;
+    padding-right: 1rem;
+}
+
+.socials__item:not(:first-child) {
+    border-left: 1px solid var(--gray-500);
+    padding-left: 1rem;
+}
+
+.skills {
+    display: flex;
+}
+
+.skills__item {
+    display: flex;
+    padding-right: 1rem;
+}
+
+.skills__item:not(:first-child) {
+    border-left: 1px solid var(--gray-500);
+    padding-left: 1rem;
+}
+
+.experience-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.experience-details:not(:first-child) {
+    margin-top: 0.25rem;
+}
+
+.experience-details__title {
+    font-weight: 600;
+}
+
+.experience-descriptions {
+    margin-top: 0.5rem;
+}
+
+.experience-descriptions__item {
+
+}
+
+.experience-descriptions__item:not(:first-child) {
+    margin-top: 0.25rem;
+}
+
+.certification {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.certification__title {
+    font-weight: 600;
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.header__text {
+    margin: 0 1rem;;
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-color: var(--gray-700);
+}
+
+.header-divider {
+    width: 100%;
+    margin: auto auto;
+}
+
+.header-divider__line {
+    border-bottom: 1px solid var(--gray-500);
+}
+
+@media print {
+    .horizontal-menu {
+	display: none;
+    }
+
+    .footer {
+	display: none;
+    }
+    
+    .card-title {
+	display: none;
+    }
+
+    .wizardly__steps {
+	display: none;
+    }
+}
