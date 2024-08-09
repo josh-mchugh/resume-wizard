@@ -12,7 +12,6 @@ object CorePageView:
       html(
         title("Resume Wizard"),
         head(
-          link(rel := "stylesheet", href := "/static/style.min.css"),
           link(rel := "stylesheet", href := "/static/styles.css"),
           link(rel := "preconnect", href := "https://fonts.googleapis.com"),
           link(rel := "preconnect", href := "https://fonts.gstatic.com"),
@@ -40,29 +39,30 @@ object CorePageView:
           )
         ),
         body(
-          div(cls := "main-wrapper")(
-            // top navigation
-            nav(cls := "horizontal-menu")(
-              div(cls := "navbar top-navbar")(
-                div(cls := "container")(
-                  div(cls := "navbar-content")(
-                    a(cls :="navbar-brand", href := "#")("Resume", span("Wizard"))
-                  )
-                )
-              )
+          // top navigation
+          nav(cls := "top-nav")(
+            a(cls := "top-nav__logo", href := "/wizard/detail")(
+              "Resume",
+              span(cls := "top-nav__logo--light")("Wizard")
             ),
-            // Page Content
-            div(cls := "page-wrapper")(
-              div(cls := "page-content")(
-                content
-              ),
-              // Footer
-              footer(cls := "footer border-top")(
-                div(cls := "container d-flex flex-column flex-md-row align-items-center justify-content-between py-3 small")(
-                  p(cls := "text-muted mb-1 mb-md-0")("Copyright 2024"),
-                  p(cls := "text-muted")("Maded For Fun")
-                )
-              )
+            a(cls := "top-nav__item", href := "/wizard/detail")("Details"),
+            a(cls := "top-nav__item", href := "/wizard/social")("Socials"),
+            a(cls := "top-nav__item", href := "/wizard/experience")("Experiences"),
+            a(cls := "top-nav__item", href := "/wizard/skill")("Skills"),
+            a(cls := "top-nav__item", href := "/wizard/certification")("Certifications"),
+            a(cls := "top-nav__item", href := "/wizard/review")("Review")
+          ),
+          // Page Content
+          div(cls := "content")(
+            div(cls := "sheet")(
+              content
+            ),
+          ),
+          // Footer
+          footer(cls := "footer border-top")(
+            div(cls := "container d-flex flex-column flex-md-row align-items-center justify-content-between py-3 small")(
+              p(cls := "text-muted mb-1 mb-md-0")("Copyright 2024"),
+              p(cls := "text-muted")("Maded For Fun")
             )
           )
         )
