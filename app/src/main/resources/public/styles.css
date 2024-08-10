@@ -19,6 +19,7 @@
 }
 
 body {
+    min-height: 98vh;
     background: var(--background);
     font-family: 'Roboto';
 }
@@ -63,18 +64,44 @@ body {
 
 .content {
     display: flex;
+    justify-content: center;
     width: 100%;
+    min-height: 90vh;
 }
 
 .sheet {
     display: flex;
-    width: 750px;
-    margin: 1.5rem auto;
+    width: 875px;
+    margin: 1.5rem 0;
     padding: 1.5rem;
     background: var(--white);
-    border-radius: 0.25rem;
+    border-radius: 0.15rem;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 2px 20px 0 rgba(0, 0, 0, 0.09);
 }
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.footer__text {
+    margin: 0 auto;
+    color: var(--gray-700);
+    font-size: 0.75rem;
+}
+
+@media only screen and (max-width: 952px) {
+
+}
+
+@media only screen and (min-width: 952px) and (max-width: 1200px) {
+}
+
+@media only screen and (min-width: 1200px) {
+}
+
 
 .wizardly {
     display: grid;

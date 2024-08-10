@@ -59,12 +59,11 @@ object CorePageView:
             ),
           ),
           // Footer
-          footer(cls := "footer border-top")(
-            div(cls := "container d-flex flex-column flex-md-row align-items-center justify-content-between py-3 small")(
-              p(cls := "text-muted mb-1 mb-md-0")("Copyright 2024"),
-              p(cls := "text-muted")("Maded For Fun")
-            )
+          footer(cls := "footer")(
+            span(cls := "footer__text")("Maded For Fun"),
+            span(cls := "footer__text")("Copyright 2024")
           )
         )
       )
     )
+
