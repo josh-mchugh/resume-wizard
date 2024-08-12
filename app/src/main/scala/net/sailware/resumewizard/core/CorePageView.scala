@@ -7,7 +7,7 @@ import scalatags.Text.tags2.title
 
 object CorePageView:
 
-  def view(content: Frag) =
+  def view(topNavItems: List[Frag], content: Frag) =
     doctype("html")(
       html(
         title("Resume Wizard"),
@@ -45,12 +45,7 @@ object CorePageView:
               "Resume",
               span(cls := "top-nav__logo--light")("Wizard")
             ),
-            a(cls := "top-nav__item", href := "/wizard/detail")("Details"),
-            a(cls := "top-nav__item", href := "/wizard/social")("Socials"),
-            a(cls := "top-nav__item", href := "/wizard/experience")("Experiences"),
-            a(cls := "top-nav__item", href := "/wizard/skill")("Skills"),
-            a(cls := "top-nav__item", href := "/wizard/certification")("Certifications"),
-            a(cls := "top-nav__item", href := "/wizard/review")("Review")
+            topNavItems,
           ),
           // Page Content
           div(cls := "content")(
