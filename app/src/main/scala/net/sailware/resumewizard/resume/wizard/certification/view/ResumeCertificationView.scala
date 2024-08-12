@@ -8,7 +8,7 @@ import scalatags.Text.all.*
 object ResumeCertificationView:
 
   def view(request: CertificationViewRequest) =
-    ResumePageView.viewCustom(request.step, formContent(request.certifications))
+    ResumePageView.view(request.step, formContent(request.certifications))
 
   private def formContent(certifications: List[Certification]) =
     div(attr("data-controller") := "fieldsets")(

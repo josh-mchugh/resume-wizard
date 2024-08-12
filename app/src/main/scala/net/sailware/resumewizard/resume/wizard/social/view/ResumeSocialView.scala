@@ -8,7 +8,7 @@ import scalatags.Text.all.*
 object ResumeSocialView:
 
   def view(request: SocialViewRequest) =
-    ResumePageView.viewCustom(request.step, formContent(request.socials))
+    ResumePageView.view(request.step, formContent(request.socials))
 
   private def formContent(socials: List[Social]) =
     div(attr("data-controller") := "fieldsets")(

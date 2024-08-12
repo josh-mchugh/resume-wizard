@@ -8,7 +8,7 @@ import scalatags.Text.all.*
 object ResumeExperienceView:
 
   def view(request: ExperienceViewRequest) =
-    ResumePageView.viewCustom(request.step, formContent(request.experiences))
+    ResumePageView.view(request.step, formContent(request.experiences))
 
   private def formContent(experiences: List[Experience]) =
     div(attr("data-controller") := "fieldsets")(

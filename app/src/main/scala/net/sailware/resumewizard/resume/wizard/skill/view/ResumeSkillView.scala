@@ -8,7 +8,7 @@ import scalatags.Text.all.*
 object ResumeSkillView:
 
   def view(request: SkillViewRequest) =
-    ResumePageView.viewCustom(request.step, formContent(request.skills))
+    ResumePageView.view(request.step, formContent(request.skills))
 
   private def formContent(skills: List[Skill]) =
     div(attr("data-controller") := "fieldsets")(
