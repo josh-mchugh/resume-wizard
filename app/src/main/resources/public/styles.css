@@ -6,7 +6,7 @@
 
 :root {
     --primary: var(--star-command-500);
-    --accent: var(--star-command-200);
+    --accent: #ff8243;
     --background: #FAFAF9;
 
     --white: #FFFFFF;
@@ -109,6 +109,34 @@ body {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 2px 20px 0 rgba(0, 0, 0, 0.09);
 }
 
+.sheet-form {
+    width: 100%;
+}
+
+.sheet-form__content {
+
+}
+
+.sheet-form-header {
+    display: flex;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--gray-400);
+}
+
+.sheet-form-header__add-btn {
+    margin: auto auto auto 0;
+}
+
+.sheet-form-header__title {
+    margin: auto;
+    font-size: 2.65em;
+}
+
+.sheet-form-header__save-btn {
+    margin: auto 0 auto auto;
+}
+
 .footer {
     display: flex;
     flex-direction: column;
@@ -180,6 +208,62 @@ body {
 
 textarea.form-control {
     resize: vertical;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: start;
+    min-width: 10ch;
+    min-height: 44px;
+    padding: 0.25em 0.75em;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 1.75rem;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.18);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.1;
+    text-align: center;
+    cursor: pointer;
+    transition: 220ms all ease-in-out;
+}
+
+.btn--primary {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.btn--primary:hover,
+.btn--primary:active {
+    background-color: var(--star-command-600);
+}
+
+.btn--primary:focus {
+    outline-style: solid;
+    outline-color: transparent;
+    box-shadow: 0 0 0 4px var(--star-command-600);
+}
+
+.btn--outline-primary {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn--outline-primary:hover,
+.btn--outline-primary:active {
+    background-color: var(--star-command-50);
+}
+
+.btn--outline-primary:focus {
+    outline-style: solid;
+    outline-color: transparent;
+    box-shadow: 0 0 0 4px var(--star-command-600);
+}
+
+a.btn {
+    text-decoration: none;
 }
 
 /* Resume Page Layout Styles */
