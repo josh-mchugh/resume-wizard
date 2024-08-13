@@ -43,11 +43,11 @@ object ResumeSkillView:
         button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
       ),
       div(cls := "wizardly-form-entry__form-group")(
-        div()(
+        div(cls := "form-group")(
           label(cls := "form-label")("Name"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].name", placeholder := "Name", value := skillName)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Rating"),
         input(cls := "form-range", `type` := "range", name := s"$fieldName[$id].rating", min := 0, max := 5, step := 1, value := rating)
         ),

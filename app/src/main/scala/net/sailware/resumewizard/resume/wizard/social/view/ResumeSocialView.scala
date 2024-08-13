@@ -43,11 +43,11 @@ object ResumeSocialView:
         button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
       ),
       div(cls := "wizardly-form-entry__form-group")(
-        div()(
+        div(cls := "form-group")(
           label(cls := "form-label")("Name"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].name", placeholder := "Name", value := socialName)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("URL"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].url", placeholder := "URL", value := url)
         ),

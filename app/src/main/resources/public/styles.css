@@ -1,6 +1,12 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 :root {
-    --primary: #000865;
-    --accent: #6571ff;
+    --primary: var(--star-command-500);
+    --accent: var(--star-command-200);
     --background: #FAFAF9;
 
     --white: #FFFFFF;
@@ -16,12 +22,30 @@
     --gray-800: #1f2937;
     --gray-900: #111827;
     --gray-950: #020617;
+
+    --star-command-50: #dee8f3;
+    --star-command-100: #bdd1e7;
+    --star-command-200: #9cbbdc;
+    --star-command-300: #78a5d0;
+    --star-command-400: #4f90c4;
+    --star-command-500: #007bb8;
+    --star-command-600: #146697;
+    --star-command-700: #195177;
+    --star-command-800: #1a3d58;
+    --star-command-900: #172a3b;
+    --star-command-950: #111921;
+
+    --input-border: var(--gray-900);
+    --input-focus-h: 200;
+    --input-focus-s: 100%;
+    --input-focus-l: 36%;
 }
 
 body {
     min-height: 98vh;
     background: var(--background);
     font-family: 'Roboto';
+    accent-color: var(--primary);
 }
 
 .top-nav {
@@ -32,14 +56,14 @@ body {
 
 .top-nav__logo {
     margin-right: auto;
-    color: var(--primary);
+    color: var(--gray-800);
     font-weight: 700;
     font-size: 1.5rem;
     text-decoration: none;
 }
 
 .top-nav__logo--light {
-    color: var(--accent);
+    color: var(--primary);
     font-weight: 300;
 }
 
@@ -47,7 +71,7 @@ body {
     margin-right: 0.5rem;
     padding: 0.25rem .75rem;
     border: 1px solid transparent;
-    color: var(--primary);
+    color: var(--gray-800);
     font-weight: 500;
     text-decoration: none;
 }
@@ -57,20 +81,15 @@ body {
 }
 
 .top-nav__item:hover {
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 0.5rem;
+    background-color: var(--white);
+    border-radius: 1rem;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.09), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
 }
 
 .top-nav__item--current {
-    border: 1px solid var(--primary);
-    border-radius: 0.5rem;
-}
-
-.top-nav__item--current:hover {
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    border-radius: 0.5rem;
+    background-color: var(--white);
+    border-radius: 1rem;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.09), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
 }
 
 .content {
@@ -103,106 +122,64 @@ body {
     font-size: 0.75rem;
 }
 
-@media only screen and (max-width: 952px) {
+@media only screen and (max-width: 952px) {}
 
-}
-
-@media only screen and (min-width: 952px) and (max-width: 1200px) {
-}
+@media only screen and (min-width: 952px) and (max-width: 1200px) {}
 
 @media only screen and (min-width: 1200px) {
 }
 
-
-.wizardly {
-    display: grid;
-    grid-template-columns: 2fr 6fr;
-    gap: 2rem;
-}
-.wizardly__steps {
+/* forms and inputs */
+.form-group {
     display: flex;
     flex-direction: column;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-.wizardly-step {
-    width: auto;
-    display: flex;
-    flex-group: 1;
-}
-.wizardly-step__link {
-    display: block;
-    width: 100%;
-    margin: 0 0 0.5em 0;
-    padding: 0.469rem 0.8rem;
-    background-color: rgb(18, 30, 59);
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
-    color: #ffffff;
-    text-decoration: none;
-    outline: 0;
-}
-.wizardly-step__link:hover {
-    color: #ffffff;
-}
-.wizardly-step__link--current {
-    background-color: rgb(101, 113, 255);
-    border: 1px solid transparent;
-}
-.wizardly-step__link--active {
-    background-color: rgba(101, 113, 225, 0.1);
-    color: rgb(101, 113, 255);
-    border: 1px solid rgb(101, 113, 255);
-    cursor: pointer;
-}
-.wizardly-step__link--active:hover {
-    color: rgb(101, 113, 255);
-}
-.wizardly__content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.wizardly-form {
-    width: 100%;
-    padding-bottom: 1rem;
+    gap: 0.75rem;
 }
 
-.wizardly-form-entry {
-    display: flex;
-    flex-direction: row-reverse;
-    width: 100%;
+.form-group:not(:first-child) {
+    margin-top: 1rem;
 }
 
-.wizardly-form-entry__delete {
-    margin-left: 1.25rem;
+.form-label {
+    color: var(--gray-900);
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1;
 }
 
-.wizardly-form-entry__form-group {
-    width: 100%;
+.form-control {
+    font-size: 1rem;
+    font-family: inherit;
+    padding: 0.25em 0.5em;
+    background-color: var(--white);
+    border: 2px solid var(--input-border);
+    border-radius: 4px;
+    transition: 180ms box-shadow ease-in-out;
 }
 
-.wizardly-form-entry:not(:first-child) {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(101, 113, 225)
+.form-control:focus{
+    border-color: hsl(
+	var(--input-focus-h),
+	var(--input-focus-s),
+	var(--input-focus-l)
+    );
+    box-shadow: 0 0 0 3px
+        hsla(
+	    var(--input-focus-h),
+	    var(--input-focus-s),
+	    calc(var(--input-focus-l) + 40%),
+	    0.8
+        );
+    outline: 3px solid transparent;
 }
 
-.wizardly-actions {
-    display: flex;
-    justify-content: space-between;
+.form-control:not(textarea) {
+    line-height: 1;
+    height: 2.25rem;
 }
 
-.btn-disabled {
-    background: rgb(24, 40, 78);
-    border-color: rgb(24, 40, 78);
-}
-
-.btn-disabled:hover {
-    background: rgb(24, 40, 78);
-    border-color: rgb(24, 40, 78);
-    cursor: not-allowed;
+textarea.form-control {
+    resize: vertical;
 }
 
 /* Resume Page Layout Styles */

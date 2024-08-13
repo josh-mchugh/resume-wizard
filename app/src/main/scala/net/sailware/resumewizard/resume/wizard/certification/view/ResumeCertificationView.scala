@@ -43,19 +43,19 @@ object ResumeCertificationView:
         button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
       ),
       div(cls := "wizardly-form-entry__form-group")(
-        div()(
+        div(cls := "form-group")(
           label(cls := "form-label")("Title"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].title", placeholder := "Title", value := title)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Organization"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].organization", placeholder := "Organization", value := organization)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Year"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].year", placeholder := "Year", value := year)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Location"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].location", placeholder := "Location", value := location)
         )

@@ -43,27 +43,27 @@ object ResumeExperienceView:
         button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
       ),
       div(cls := "wizardly-form-entry__form-group")(
-        div()(
+        div(cls := "form-group")(
           label(cls := "form-label")("Title"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].title", placeholder := "Title", value := title)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Organization"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].organization", placeholder := "Organization", value := organization)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Duration"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].duration",  placeholder := "Duration", value := duration)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Location"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].location", placeholder := "Location", value := location)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Description"),
           textarea(cls := "form-control", rows := 3, name := s"$fieldName[$id].description", placeholder := "Description")(description)
         ),
-        div(cls := "mt-3")(
+        div(cls := "form-group")(
           label(cls := "form-label")("Skills"),
           textarea(cls := "form-control", rows := 3, name := s"$fieldName[$id].skills",  placeholder := "Skills")(skills)
         )
