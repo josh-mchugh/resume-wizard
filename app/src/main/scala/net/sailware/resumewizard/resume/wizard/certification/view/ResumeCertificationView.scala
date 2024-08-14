@@ -11,19 +11,18 @@ object ResumeCertificationView:
     ResumePageView.view(request.step, formContent(request.certifications))
 
   private def formContent(certifications: List[Certification]) =
-    div(attr("data-controller") := "fieldsets")(
-      form(id := "form", method := "post", action := "/wizard/certification")(
-        div(cls := "wizardly__content")( 
-          div(cls := "wizardly-form", attr("data-fieldsets-target") := "container")(
-            buildEntries(certifications),
-          ),
-          div(cls := "wizardly-actions")(
-            button(cls := "btn btn-outline-secondary", `type` := "button", attr("data-action") := "click->fieldsets#addEntry")("Add Another"),
-            button(cls := "btn btn-primary", `type` := "submit")("Next")
-          )
-        )
+    form(cls := "sheet-form", method := "post", action := "/wizard/certification")(
+      div(attr("data-controller") := "fieldsets")(
+        div(cls := "sheet-form-header")(
+          button(cls := "btn btn--outline-primary sheet-form-header__add-btn", `type` := "button", attr("data-action") := "click->fieldsets#addEntry")("Add Certification"),
+          h1(cls := "sheet-form-header__title")("Certifications"),
+          button(cls := "btn btn--primary sheet-form-header__save-btn", `type` := "submit")("Save")
+        ),
+        div(cls := "sheet-form__content", attr("data-fieldsets-target") := "container")(
+          buildEntries(certifications),
+        ),
+        template()
       ),
-      template()
     )
      
   private def buildEntries(certifications: List[Certification]) =

@@ -11,19 +11,18 @@ object ResumeExperienceView:
     ResumePageView.view(request.step, formContent(request.experiences))
 
   private def formContent(experiences: List[Experience]) =
-    div(attr("data-controller") := "fieldsets")(
-      form(id := "form", method := "post", action := "/wizard/experience")(
-        div(cls := "wizardly__content")( 
-          div(cls := "wizardly-form", attr("data-fieldsets-target") := "container")(
-            buildEntries(experiences),
-          ),
-          div(cls := "wizardly-actions")(
-            button(cls := "btn btn-outline-secondary", `type` := "button", attr("data-action") := "click->fieldsets#addEntry")("Add Another"),
-            button(cls := "btn btn-primary", `type` := "submit")("Next")
-          )
-        )
+    form(cls := "sheet-form", method := "post", action := "/wizard/experience")(
+      div(attr("data-controller") := "fieldsets")(
+        div(cls := "sheet-form-header")(
+          button(cls := "btn btn--outline-primary sheet-form-header__add-btn", `type` := "button", attr("data-action") := "click->fieldsets#addEntry")("Add Experience"),
+          h1(cls := "sheet-form-header__title")("Experiences"),
+          button(cls := "btn btn--primary sheet-form-header__save-btn", `type` := "submit")("Save")
+        ),
+        div(cls := "sheet-form__content", attr("data-fieldsets-target") := "container")(
+          buildEntries(experiences),
+        ),
+        template(),
       ),
-      template()
     )
      
   private def buildEntries(experiences: List[Experience]) =

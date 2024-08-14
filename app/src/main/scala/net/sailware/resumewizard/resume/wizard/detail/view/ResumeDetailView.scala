@@ -11,9 +11,13 @@ object ResumeDetailView:
     ResumePageView.view(request.step, formContent(request.detail))
 
   private def formContent(detail: Detail) =
-    div(attr("data-controller") := "fieldsets")(
-      form(id := "form", method := "post", action := "/wizard/detail")(
-        div(attr("data-fieldsets-target") := "container")(
+    form(cls := "sheet-form", method := "post", action := "/wizard/detail")(
+      div(attr("data-controller") := "fieldsets")(
+        div(cls := "sheet-form-header")(
+          h1(cls := "sheet-form-header__title")("Details"),
+          button(cls := "btn btn--primary sheet-form-header__save-btn", `type` := "submit")("Save")
+        ),
+        div(cls := "sheet-form__content", attr("data-fieldsets-target") := "container")(
           buildEntry(detail),
         )
       ),

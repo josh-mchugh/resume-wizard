@@ -119,22 +119,28 @@ body {
 
 .sheet-form-header {
     display: flex;
+    justify-content: center;
     margin-bottom: 1.75rem;
     padding-bottom: 1.75rem;
     border-bottom: 1px solid var(--gray-400);
 }
 
 .sheet-form-header__add-btn {
-    margin: auto auto auto 0;
+    align-self: flex-start;
+    margin: auto 0;
 }
 
 .sheet-form-header__title {
-    margin: auto;
+    flex: 1 1 auto;
+    align-self: center;
+    margin: auto auto;
     font-size: 2.65em;
+    text-align: center;
 }
 
 .sheet-form-header__save-btn {
-    margin: auto 0 auto auto;
+    align-self: flex-end;
+    margin: auto 0;
 }
 
 .footer {
