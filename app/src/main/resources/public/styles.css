@@ -143,6 +143,26 @@ body {
     margin: auto 0;
 }
 
+.entry {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.entry:not(:first-child) {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-400);
+}
+
+.entry__delete {
+
+}
+
+.entry__fields {
+    width: 100%;
+}
+
 .footer {
     display: flex;
     flex-direction: column;
@@ -266,6 +286,32 @@ textarea.form-control {
     outline-style: solid;
     outline-color: transparent;
     box-shadow: 0 0 0 4px var(--star-command-600);
+}
+
+.btn--entry-remove {
+    width: 1rem;
+    min-width: 1rem;
+    height: 1rem;
+    min-height: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--gray-400);
+    border-radius: 15px;
+    box-shadow: none;
+    color: var(--gray-500);
+    font-size: 1em;
+    line-height: 1.42;
+    transition: none;
+}
+
+.btn--entry-remove:hover,
+.btn--entry-remove:active {
+    background-color: var(--gray-100);
+}
+
+.btn--entry-remove:focus {
+    outline-style: solid;
+    outline-color: transparent;
+    box-shadow: 0 0 0 2px var(--gray-500);
 }
 
 a.btn {

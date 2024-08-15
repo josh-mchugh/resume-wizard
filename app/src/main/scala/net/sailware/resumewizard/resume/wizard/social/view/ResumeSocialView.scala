@@ -37,11 +37,8 @@ object ResumeSocialView:
     )
 
   private def buildEntry(fieldName: String, id: String, socialName: String, url: String) =
-    div(cls := "wizardly-form-entry", attr("data-fieldsets-target") := fieldName)(
-      div(cls := "wizardly-form-entry__delete")(
-        button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
-      ),
-      div(cls := "wizardly-form-entry__form-group")(
+    div(cls := "entry", attr("data-fieldsets-target") := fieldName)(
+      div(cls := "entry__fields")(
         div(cls := "form-group")(
           label(cls := "form-label")("Name"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].name", placeholder := "Name", value := socialName)
@@ -50,5 +47,8 @@ object ResumeSocialView:
           label(cls := "form-label")("URL"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].url", placeholder := "URL", value := url)
         ),
+      ),
+      div(cls := "entry__delete")(
+        button(cls := "btn btn--entry-remove", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
       )
     )
