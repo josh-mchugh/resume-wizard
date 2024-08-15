@@ -6,7 +6,22 @@
 
 :root {
     --primary: var(--star-command-500);
+    --primary-h: 200;
+    --primary-s: 100%;
+    --primary-l: 36%;
+    --primary-hsl: hsl(
+	var(--primary-h),
+	var(--primary-s),
+	var(--primary-l)
+    );
+    --primary-hsla-focus: hsla(
+	var(--primary-h),
+	var(--primary-s),
+	calc(var(--primary-l) + 40%),
+	0.8
+    );
     --accent: #ff8243;
+    
     --background: #FAFAF9;
 
     --white: #FFFFFF;
@@ -35,10 +50,7 @@
     --star-command-900: #172a3b;
     --star-command-950: #111921;
 
-    --input-border: var(--gray-900);
-    --input-focus-h: 200;
-    --input-focus-s: 100%;
-    --input-focus-l: 36%;
+    --input-border: var(--gray-400);
 }
 
 body {
@@ -80,16 +92,19 @@ body {
     margin-right: auto;
 }
 
-.top-nav__item:hover {
+.top-nav__item:hover,
+.top-nav__item:focus {
     background-color: var(--white);
     border-radius: 1rem;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.09), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
+    border-color: var(--primary-hsl);
+    box-shadow: 0 0 0 3px var(--primary-hsla-focus);
+    outline: 3px solid transparent;
 }
 
 .top-nav__item--current {
     background-color: var(--white);
     border-radius: 1rem;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.09), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
+    border: 2px solid var(--star-command-400);
 }
 
 .content {
@@ -212,18 +227,8 @@ body {
 }
 
 .form-control:focus{
-    border-color: hsl(
-	var(--input-focus-h),
-	var(--input-focus-s),
-	var(--input-focus-l)
-    );
-    box-shadow: 0 0 0 3px
-        hsla(
-	    var(--input-focus-h),
-	    var(--input-focus-s),
-	    calc(var(--input-focus-l) + 40%),
-	    0.8
-        );
+    border-color: var(--primary-hsl);
+    box-shadow: 0 0 0 3px var(--primary-hsla-focus);
     outline: 3px solid transparent;
 }
 
@@ -266,12 +271,6 @@ textarea.form-control {
     background-color: var(--star-command-600);
 }
 
-.btn--primary:focus {
-    outline-style: solid;
-    outline-color: transparent;
-    box-shadow: 0 0 0 4px var(--star-command-600);
-}
-
 .btn--outline-primary {
     border: 1px solid var(--primary);
     color: var(--primary);
@@ -280,12 +279,6 @@ textarea.form-control {
 .btn--outline-primary:hover,
 .btn--outline-primary:active {
     background-color: var(--star-command-50);
-}
-
-.btn--outline-primary:focus {
-    outline-style: solid;
-    outline-color: transparent;
-    box-shadow: 0 0 0 4px var(--star-command-600);
 }
 
 .btn--entry-remove {
@@ -308,10 +301,12 @@ textarea.form-control {
     background-color: var(--gray-100);
 }
 
+.btn--primary:focus,
+.btn--outline-primary:focus,
 .btn--entry-remove:focus {
-    outline-style: solid;
-    outline-color: transparent;
-    box-shadow: 0 0 0 2px var(--gray-500);
+    border-color: var(--primary-hsl);
+    box-shadow: 0 0 0 3px var(--primary-hsla-focus);
+    outline: 3px solid transparent;
 }
 
 a.btn {
