@@ -57,11 +57,11 @@ object ResumeExperienceView:
         ),
         div(cls := "form-group")(
           label(cls := "form-label")("Description"),
-          textarea(cls := "form-control", rows := 3, name := s"$fieldName[$id].description", placeholder := "Description")(description)
+          textarea(cls := "form-control", rows := 6, name := s"$fieldName[$id].description", placeholder := "Description")(description)
         ),
         div(cls := "form-group")(
           label(cls := "form-label")("Skills"),
-          textarea(cls := "form-control", rows := 3, name := s"$fieldName[$id].skills",  placeholder := "Skills")(skills)
+          input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].skills",  placeholder := "Skills", value := skills)
         )
       ),
       div(cls := "entry__delete")(

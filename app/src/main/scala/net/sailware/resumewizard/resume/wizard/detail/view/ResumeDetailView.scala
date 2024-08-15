@@ -35,7 +35,7 @@ object ResumeDetailView:
       ),
       div(cls := "form-group")(
         label(cls := "form-label")("Summary"),
-        textarea(cls := "form-control", rows := 3, name := "summary",  placeholder := "Summary of your current or previous role")(detail.summary)
+        textarea(cls := "form-control", rows := 6, name := "summary",  placeholder := "Summary of your current or previous role")(detail.summary)
       ),
       div(cls := "form-group")(
         label(cls := "form-label")("Phone Number"),
