@@ -49,3 +49,6 @@ nb-configuration.xml
 
 # Mill
 out/
+
+#sqlite dbs
+*.db

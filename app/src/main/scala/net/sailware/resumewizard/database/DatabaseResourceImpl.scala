@@ -15,6 +15,6 @@ class DatabaseResourceImpl(configService: ConfigService) extends DatabaseResourc
   hikariConfig.setUsername(configService.getDatabaseConfig().username)
   hikariConfig.setPassword(configService.getDatabaseConfig().password)
 
-  val dslContext = DSL.using(new HikariDataSource(hikariConfig), SQLDialect.POSTGRES)
+  val dslContext = DSL.using(new HikariDataSource(hikariConfig), SQLDialect.SQLITE)
 
   override def ctx = dslContext

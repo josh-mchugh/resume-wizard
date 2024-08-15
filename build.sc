@@ -8,9 +8,8 @@ object app extends ScalaModule {
     ivy"com.lihaoyi::cask:0.9.2",
     ivy"com.lihaoyi::scalatags:0.13.1",
     ivy"org.jooq:jooq:3.19.10",
-    ivy"org.postgresql:postgresql:42.7.3",
+    ivy"org.xerial:sqlite-jdbc:3.46.0.1",
     ivy"org.flywaydb:flyway-core:10.15.2",
-    ivy"org.flywaydb:flyway-database-postgresql:10.15.2",
     ivy"com.zaxxer:HikariCP:5.1.0"
   )
 
