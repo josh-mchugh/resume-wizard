@@ -37,11 +37,8 @@ object ResumeCertificationView:
     )
 
   private def buildEntry(fieldName: String, id: String, title: String, organization: String, year: String, location: String) =
-    div(cls := "wizardly-form-entry", attr("data-fieldsets-target") := fieldName)(
-      div(cls := "wizardly-form-entry__delete")(
-        button(cls := "btn btn-outline-secondary btn-icon", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
-      ),
-      div(cls := "wizardly-form-entry__form-group")(
+    div(cls := "entry", attr("data-fieldsets-target") := fieldName)(
+      div(cls := "entry__fields")(
         div(cls := "form-group")(
           label(cls := "form-label")("Title"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].title", placeholder := "Title", value := title)
@@ -58,5 +55,8 @@ object ResumeCertificationView:
           label(cls := "form-label")("Location"),
           input(cls := "form-control", `type` := "text", name := s"$fieldName[$id].location", placeholder := "Location", value := location)
         )
-      )
+      ),
+      div(cls := "entry__delete")(
+        button(cls := "btn btn--entry-remove", `type` := "button", attr("data-action") := "click->fieldsets#removeEntry")("X")
+      ),
     )
