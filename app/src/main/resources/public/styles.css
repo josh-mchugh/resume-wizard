@@ -198,6 +198,24 @@ body {
 @media only screen and (min-width: 1200px) {
 }
 
+@media print {
+    body {
+	background-color: var(--white);
+    }
+    .top-nav {
+	display: none;
+    }
+    .footer {
+	display: none;
+    }
+    .sheet {
+	margin: 0;
+	width: 100%;
+	border-radius: 0;
+	box-shadow: none;
+    }
+}
+
 /* forms and inputs */
 .form-group {
     display: flex;
