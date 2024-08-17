@@ -3,6 +3,7 @@ import mill.util.Jvm
 
 object app extends ScalaModule {
   def scalaVersion = "3.3.3"
+  def mainClass = Some("net.sailware.resumewizard.Application")
 
   def resolutionCustomizer = T.task {
     Some((r: coursier.core.Resolution) =>
