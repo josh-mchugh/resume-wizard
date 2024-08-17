@@ -18,7 +18,7 @@ class ResumeSkillsRepositoryImpl(databaseResource: DatabaseResource) extends Res
       .toList
       .map(record => Skill(record))
 
-  override def insert(name: String, rating: Short): Unit =
+  override def insert(name: String, rating: Int): Unit =
     databaseResource.ctx.insertInto(
       RESUME_SKILLS,
       RESUME_SKILLS.NAME,
@@ -27,7 +27,7 @@ class ResumeSkillsRepositoryImpl(databaseResource: DatabaseResource) extends Res
       .values(name, rating)
       .execute()
 
-  override def update(id: Int, name: String, rating: Short): Unit =
+  override def update(id: Int, name: String, rating: Int): Unit =
     databaseResource.ctx.update(RESUME_SKILLS)
       .set(RESUME_SKILLS.NAME, name)
       .set(RESUME_SKILLS.RATING, rating)

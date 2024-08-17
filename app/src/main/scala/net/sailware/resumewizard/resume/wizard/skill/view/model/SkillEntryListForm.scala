@@ -28,22 +28,22 @@ object SkillEntryListForm:
     if result.contains(id) then
       variable match
         case "name" => result + (id -> result(id).copy(name = formData.get(key).element().getValue()))
-        case "rating" => result + (id -> result(id).copy(rating = formData.get(key).element().getValue().toShort))
+        case "rating" => result + (id -> result(id).copy(rating = formData.get(key).element().getValue().toInt))
         case _ => result
     else
       variable match
         case "name" => result + (id -> SkillEntryForm(id.toInt, formData.get(key).element().getValue(), 0))
-        case "rating" => result + (id -> SkillEntryForm(id.toInt, "", formData.get(key).element().getValue().toShort))
+        case "rating" => result + (id -> SkillEntryForm(id.toInt, "", formData.get(key).element().getValue().toInt))
         case _ => result
     
   private def handleNewEntry(result: Map[String, SkillNewEntryForm], id: String, variable: String, key: String, formData: FormData) =
     if result.contains(id) then
       variable match
         case "name" => result + (id -> result(id).copy(name = formData.get(key).element().getValue()))
-        case "rating" => result + (id -> result(id).copy(rating = formData.get(key).element().getValue().toShort))
+        case "rating" => result + (id -> result(id).copy(rating = formData.get(key).element().getValue().toInt))
         case _ => result
     else
       variable match
         case "name" => result + (id -> SkillNewEntryForm(formData.get(key).element().getValue(), 0))
-        case "rating" => result + (id -> SkillNewEntryForm("", formData.get(key).element().getValue().toShort))
+        case "rating" => result + (id -> SkillNewEntryForm("", formData.get(key).element().getValue().toInt))
         case _ => result  

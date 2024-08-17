@@ -4,13 +4,22 @@ import mill.util.Jvm
 object app extends ScalaModule {
   def scalaVersion = "3.3.3"
 
+  def resolutionCustomizer = T.task {
+    Some((r: coursier.core.Resolution) =>
+      r.withOsInfo(coursier.core.Activation.Os.fromProperties(sys.props.toMap))
+    )
+  }
+
   def ivyDeps = Agg(
     ivy"com.lihaoyi::cask:0.9.2",
     ivy"com.lihaoyi::scalatags:0.13.1",
     ivy"org.jooq:jooq:3.19.10",
     ivy"org.xerial:sqlite-jdbc:3.46.0.1",
     ivy"org.flywaydb:flyway-core:10.15.2",
-    ivy"com.zaxxer:HikariCP:5.1.0"
+    ivy"com.zaxxer:HikariCP:5.1.0",
+    ivy"org.openjfx:javafx-base:22.0.2",
+    ivy"org.openjfx:javafx-web:22.0.2",
+    ivy"org.scalafx::scalafx:22.0.0-R33"
   )
 
   object test extends ScalaTests {
@@ -86,7 +95,7 @@ object app extends ScalaModule {
                   - lower: unquoted object names are turned into lower case (e.g. PostgreSQL) -->
                 <property>
                   <key>defaultNameCase</key>
-                  <value>lower</value>
+                  <value>upper</value>
                 </property>
               </properties>
             </database>

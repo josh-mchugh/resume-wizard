@@ -36,7 +36,7 @@ object ResumeSkillView:
       buildEntry("newEntry", "__ID_REPLACE__", "", 0)
     )
 
-  private def buildEntry(fieldName: String, id: String, skillName: String, rating: Short) =
+  private def buildEntry(fieldName: String, id: String, skillName: String, rating: Int) =
     div(cls := "entry", attr("data-fieldsets-target") := fieldName)(
       div(cls := "entry__fields")(
         div(cls := "form-group")(

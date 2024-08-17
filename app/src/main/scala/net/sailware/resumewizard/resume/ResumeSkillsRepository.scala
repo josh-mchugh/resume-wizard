@@ -8,6 +8,6 @@ trait ResumeSkillsRepository:
 
   def fetchCount(): Long
   def fetch(): List[Skill]
-  def insert(name: String, rating: Short): Unit
-  def update(id: Int, name: String, rating: Short): Unit
+  def insert(name: String, rating: Int): Unit
+  def update(id: Int, name: String, rating: Int): Unit
   def deleteByExcludedIds(ids: List[Int]): Unit
